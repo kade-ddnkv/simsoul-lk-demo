@@ -4,10 +4,10 @@ import { createTheme, Link, Box, Container, AppBar, Toolbar, Typography, Button,
 import { styled } from '@mui/system';
 import { alpha } from "@mui/material";
 import Header from '@/components/header';
-// import Link from 'next/link';
 
-// import { Inter } from 'next/font/google'
-// const inter = Inter({ subsets: ['latin'] })
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ subsets: ['latin'] })
 
 interface RowData {
   id: number;
@@ -55,7 +55,7 @@ export default function IndexPage() {
       </AppBar> */}
       <Container maxWidth='xl' sx={{ mt: 2 }}>
         <Header mainText='Your personal slices' useHomeButton={false} isBold={true} />
-        <CreateButton href='/create-slice' variant='outlined' sx={{ mt: 6 }}>+ Create new</CreateButton>
+        <CreateButton variant='outlined' sx={{ mt: 6 }}>+ Create new</CreateButton>
         <Paper sx={{ mt: 2, mx: 'auto', borderRadius: 0 }} variant='outlined' elevation={0}>
           <Table>
             <TableHead>
