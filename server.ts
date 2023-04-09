@@ -3,7 +3,7 @@ const { createServer } = require('http')
 const { parse } = require('url')
 const next = require('next')
 
-const dev = 'development'
+const dev = true
 const hostname = 'localhost'
 const port = 3000
 // when using middleware `hostname` and `port` must be provided below
