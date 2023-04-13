@@ -6,6 +6,8 @@ import CheckBoxSharpIcon from '@mui/icons-material/CheckBoxSharp';
 import { useMediaQuery, useTheme } from '@mui/material';
 import { alpha } from "@mui/material";
 import { useRouter } from 'next/router';
+import Geography from './geography';
+import { HeaderText, StyledButton } from './generalComponents';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -78,21 +80,6 @@ const StyledTextField = styled(TextField)({
 const BoxInsideRadio = styled(Box)({
   marginLeft: '31px',
   marginBottom: '48px',
-})
-
-const HeaderText = styled(Typography)({
-  fontWeight: 'bold',
-  fontSize: '1.2rem'
-})
-
-const StyledButton = styled(Button)({
-  borderColor: 'black',
-  borderRadius: 0,
-  color: 'black',
-  ':hover': {
-    backgroundColor: '#f0f0f0',
-    borderColor: 'black',
-  }
 })
 
 const BackButton = (props) => (
@@ -1364,8 +1351,7 @@ export default function TabsCreate() {
           <CoreSliceTab />
         </TabPanel>
         <TabPanel value={tabValue} index={3}>
-          Geography
-          <ButtonsAtBottom />
+          <Geography buttonsAtBottom={<ButtonsAtBottom />} />
         </TabPanel>
         <TabPanel value={tabValue} index={4}>
           Time and Billing
