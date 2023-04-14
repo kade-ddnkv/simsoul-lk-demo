@@ -7,7 +7,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import { alpha } from "@mui/material";
 import { useRouter } from 'next/router';
 import Geography from './geography';
-import { HeaderText, StyledButton } from './generalComponents';
+import { HeaderText, StyledButton, StyledTextField } from './generalComponents';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -55,27 +55,6 @@ function a11yProps(index: number) {
     'aria-controls': `vertical-tabpanel-${index}`,
   };
 }
-
-const StyledTextField = styled(TextField)({
-  // input label when focused
-  "& label.Mui-focused": {
-    color: 'black'
-  },
-  // focused color for input with variant='standard'
-  "& .MuiInput-underline:after": {
-    borderBottomColor: 'black'
-  },
-  // focused color for input with variant='filled'
-  "& .MuiFilledInput-underline:after": {
-    borderBottomColor: 'black'
-  },
-  // focused color for input with variant='outlined'
-  "& .MuiOutlinedInput-root": {
-    "&.Mui-focused fieldset": {
-      borderColor: 'black'
-    }
-  }
-});
 
 const BoxInsideRadio = styled(Box)({
   marginLeft: '31px',

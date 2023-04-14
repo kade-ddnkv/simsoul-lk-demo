@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import Head from 'next/head';
-import { createTheme, Link, Box, Container, AppBar, Toolbar, Typography, Button, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
+import { Link, Container, Button, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
 import { styled } from '@mui/system';
 import { alpha } from "@mui/material";
 import Header from '@/components/header';
+import withAuth from '@/auth/withUser';
 // import Link from 'next/link';
+import { serverSideAuthCheck } from '@/auth/serverSideAuthCheck';
+import { GetServerSidePropsContext } from 'next';
 
 // import { Inter } from 'next/font/google'
 // const inter = Inter({ subsets: ['latin'] })
@@ -37,7 +40,11 @@ const StyledTableCell = styled(TableCell)({
   fontWeight: 600
 })
 
-export default function IndexPage() {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return serverSideAuthCheck(context)
+}
+
+const IndexPage = () => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
   return (
@@ -88,3 +95,5 @@ export default function IndexPage() {
     </>
   );
 }
+
+export default IndexPage;

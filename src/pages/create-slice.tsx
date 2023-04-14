@@ -2,8 +2,15 @@ import Head from 'next/head';
 import Header from '@/components/header';
 import { Box, Container } from '@mui/material';
 import TabsCreate from '@/components/tabs-create';
+import withAuth from '@/auth/withUser';
+import { serverSideAuthCheck } from '@/auth/serverSideAuthCheck';
+import { GetServerSidePropsContext } from 'next';
 
-export default function SlicePage() {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return serverSideAuthCheck(context)
+}
+
+const CreateSlice = () => {
   return (
     <>
       <Head>
@@ -17,4 +24,6 @@ export default function SlicePage() {
       </Container>
     </>
   );
-}  
+}
+
+export default CreateSlice;

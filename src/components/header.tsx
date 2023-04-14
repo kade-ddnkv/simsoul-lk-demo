@@ -1,5 +1,8 @@
 import React from 'react';
 import { styled, Link, Divider, AppBar, Box, Toolbar, Typography, Button, IconButton } from '@mui/material';
+import { useUser } from '@/auth/useUser';
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
 
 const OutlinedButton = styled(Button)({
   borderColor: 'white',
@@ -23,6 +26,8 @@ export default function Header(props: {
   mainText: string,
   isBold: boolean,
 }) {
+  const { user, logout } = useUser()
+
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -46,9 +51,10 @@ export default function Header(props: {
           </>}
           <Typography component='div'><Box sx={props.isBold ? { fontWeight: 'bold' } : {}}>{props.mainText}</Box></Typography>
         </Box>
-        <Box>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {user && <Typography sx={{fontSize: '14px', mr: 4}}>Account: {user?.email}</Typography>}
           <OutlinedButton variant='outlined'>Leave feedback</OutlinedButton>
-          <OutlinedButton sx={{ ml: 1 }} variant='outlined'>Sign out</OutlinedButton>
+          <OutlinedButton sx={{ ml: 1 }} variant='outlined' onClick={() => firebase.auth().signOut().then(logout)}>Sign out</OutlinedButton>
         </Box>
       </Box>
       <hr
