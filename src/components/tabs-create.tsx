@@ -41,7 +41,6 @@ function TabPanel(props: TabPanelProps) {
     >
       {value === index && (
         <Box sx={{ pl: 5, pt: 2 }}>
-          {/* <Typography>{children}</Typography> */}
           {children}
         </Box>
       )}
@@ -300,6 +299,14 @@ export default function TabsCreate() {
   const [selectedFallback, setSelectedFallback] = React.useState('nothing');
   const [selectedTransferCore, setSelectedTransferCore] = React.useState('operator');
 
+  const [selectedTrafficWithOperator, setSelectedTrafficWithOperator] = React.useState('public');
+  const [selectedFallbackWithOperator, setSelectedFallbackWithOperator] = React.useState('null');
+
+  const [selectedTrafficWithLocal, setSelectedTrafficWithLocal] = React.useState('public');
+  const [selectedFallbackWithLocal, setSelectedFallbackWithLocal] = React.useState('null');
+
+  const [selectedFallbackWithTransfer, setSelectedFallbackWithTransfer] = React.useState('null');
+
   function isCoreWithVpnActive() {
     return (selectedCore === 'operator' || selectedCore === 'local') && selectedTraffic === 'VPN';
   }
@@ -328,6 +335,26 @@ export default function TabsCreate() {
       setSelectedTransferCore((event.target as HTMLInputElement).value);
     };
 
+    const handleTrafficWithOperatorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedTrafficWithOperator((event.target as HTMLInputElement).value);
+    };
+
+    const handleFallbackWithOperatorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedFallbackWithOperator((event.target as HTMLInputElement).value);
+    };
+
+    const handleTrafficWithLocalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedTrafficWithLocal((event.target as HTMLInputElement).value);
+    };
+
+    const handleFallbackWithLocalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedFallbackWithLocal((event.target as HTMLInputElement).value);
+    };
+
+    const handleFallbackWithTransferChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedFallbackWithTransfer((event.target as HTMLInputElement).value);
+    };
+
     function isTrafficActive() {
       return selectedCore === 'operator' || selectedCore === 'local';
     }
@@ -335,6 +362,18 @@ export default function TabsCreate() {
     function isFallbackActive() {
       return (selectedCore === 'operator' || selectedCore === 'local') && selectedTraffic === 'VPN'
         || selectedCore === 'transfer';
+    }
+
+    function isFallbackWithOperatorActive() {
+      return selectedCore === 'operator' && selectedTrafficWithOperator === 'VPN'
+    }
+
+    function isFallbackWithLocalActive() {
+      return selectedCore === 'local' && selectedTrafficWithLocal === 'VPN'
+    }
+
+    function isFallbackWithTransferActive() {
+      return selectedCore === 'transfer'
     }
 
     return (
@@ -361,7 +400,65 @@ export default function TabsCreate() {
               <FormControlLabel value="operator" control={<Radio style={{ color: 'black' }} />} label={
                 <Typography sx={{ fontWeight: 'bold' }}>Allocated resources on the operator's side, under the operator's control.</Typography>
               } />
-              <Box sx={{ mb: 3 }}></Box>
+              <BoxInsideRadio>
+                <Box sx={selectedCore !== 'operator' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+                  <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
+                    <Grid item xs={12} lg={2} />
+                    <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
+                      <Typography>Data plane goes</Typography>
+                    </Grid>
+                    <Grid item xs={12} lg={6}>
+                      <RadioGroup
+                        name="fallback-operator-radio-buttons-group"
+                        value={selectedTrafficWithOperator}
+                        onChange={handleTrafficWithOperatorChange}
+                      >
+                        <FormControlLabel disabled={selectedCore !== 'operator'} value="public" control={
+                          <Radio style={selectedCore === 'operator' ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to public</Typography>
+                        } />
+                        <FormControlLabel disabled={selectedCore !== 'operator'} value="VPN" control={
+                          <Radio style={selectedCore === 'operator' ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to VPN</Typography>
+                        } />
+                      </RadioGroup>
+                    </Grid>
+                  </Grid>
+                </Box>
+                <Box sx={!isFallbackWithOperatorActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+                  <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
+                    <Grid item xs={12} lg={2} />
+                    <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
+                      <Typography>Fallback scenario</Typography>
+                    </Grid>
+                    <Grid item xs={12} lg={6}>
+                      <RadioGroup
+                        name="fallback-operator-radio-buttons-group"
+                        value={selectedFallbackWithOperator}
+                        onChange={handleFallbackWithOperatorChange}
+                      >
+                        <FormControlLabel disabled={!isFallbackWithOperatorActive()} value="null" control={
+                          <Radio style={isFallbackWithOperatorActive() ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to null (do nothing)</Typography>
+                        } />
+                        <FormControlLabel disabled={!isFallbackWithOperatorActive()} value="public" control={
+                          <Radio style={isFallbackWithOperatorActive() ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to public</Typography>
+                        } />
+                        <FormControlLabel disabled={!isFallbackWithOperatorActive()} value="VPN" control={
+                          <Radio style={isFallbackWithOperatorActive() ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to VPN</Typography>
+                        } />
+                      </RadioGroup>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </BoxInsideRadio>
               {/* <BoxInsideRadio>
                 <Box sx={selectedCore !== 'operator' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
                   <Box>
@@ -521,6 +618,63 @@ export default function TabsCreate() {
                     </Grid>
                   </Grid>
                 </Box>
+                <Box sx={selectedCore !== 'local' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+                  <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
+                    <Grid item xs={12} lg={2} />
+                    <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
+                      <Typography>Data plane goes</Typography>
+                    </Grid>
+                    <Grid item xs={12} lg={6}>
+                      <RadioGroup
+                        name="fallback-operator-radio-buttons-group"
+                        value={selectedTrafficWithLocal}
+                        onChange={handleTrafficWithLocalChange}
+                      >
+                        <FormControlLabel disabled={selectedCore !== 'local'} value="public" control={
+                          <Radio style={selectedCore === 'local' ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to public</Typography>
+                        } />
+                        <FormControlLabel disabled={selectedCore !== 'local'} value="VPN" control={
+                          <Radio style={selectedCore === 'local' ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to VPN</Typography>
+                        } />
+                      </RadioGroup>
+                    </Grid>
+                  </Grid>
+                </Box>
+                <Box sx={!isFallbackWithLocalActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+                  <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
+                    <Grid item xs={12} lg={2} />
+                    <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
+                      <Typography>Fallback scenario</Typography>
+                    </Grid>
+                    <Grid item xs={12} lg={6}>
+                      <RadioGroup
+                        name="fallback-operator-radio-buttons-group"
+                        value={selectedFallbackWithLocal}
+                        onChange={handleFallbackWithLocalChange}
+                      >
+                        <FormControlLabel disabled={!isFallbackWithLocalActive()} value="null" control={
+                          <Radio style={isFallbackWithLocalActive() ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to null (do nothing)</Typography>
+                        } />
+                        <FormControlLabel disabled={!isFallbackWithLocalActive()} value="public" control={
+                          <Radio style={isFallbackWithLocalActive() ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to public</Typography>
+                        } />
+                        <FormControlLabel disabled={!isFallbackWithLocalActive()} value="VPN" control={
+                          <Radio style={isFallbackWithLocalActive() ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to VPN</Typography>
+                        } />
+                      </RadioGroup>
+                    </Grid>
+                  </Grid>
+                </Box>
               </BoxInsideRadio>
               <FormControlLabel value="transfer" control={<Radio style={{ color: 'black' }} />} label={
                 <Typography sx={{ fontWeight: 'bold' }}>Transfer some core resources to the my local platform.</Typography>
@@ -552,6 +706,37 @@ export default function TabsCreate() {
                     </Grid>
                   </Grid>
                 </Box>
+                <Box sx={!isFallbackWithTransferActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+                  <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
+                    <Grid item xs={12} lg={2} />
+                    <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
+                      <Typography>Fallback scenario</Typography>
+                    </Grid>
+                    <Grid item xs={12} lg={6}>
+                      <RadioGroup
+                        name="fallback-operator-radio-buttons-group"
+                        value={selectedFallbackWithTransfer}
+                        onChange={handleFallbackWithTransferChange}
+                      >
+                        <FormControlLabel disabled={!isFallbackWithTransferActive()} value="null" control={
+                          <Radio style={isFallbackWithTransferActive() ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to null (do nothing)</Typography>
+                        } />
+                        <FormControlLabel disabled={!isFallbackWithTransferActive()} value="public" control={
+                          <Radio style={isFallbackWithTransferActive() ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to public</Typography>
+                        } />
+                        <FormControlLabel disabled={!isFallbackWithTransferActive()} value="VPN" control={
+                          <Radio style={isFallbackWithTransferActive() ? { color: 'black' } : {}} />
+                        } label={
+                          <Typography>to VPN</Typography>
+                        } />
+                      </RadioGroup>
+                    </Grid>
+                  </Grid>
+                </Box>
               </BoxInsideRadio>
               <FormControlLabel value="nothing" control={<Radio style={{ color: 'black' }} />} label={
                 <Typography sx={{ fontWeight: 'bold' }}>I don't need a core slice</Typography>
@@ -559,164 +744,6 @@ export default function TabsCreate() {
             </RadioGroup>
           </Grid>
         </Grid>
-        <Box sx={!isTrafficActive() ? {
-          '& .MuiTypography-root': { color: alpha('#000000', 0.38) },
-          // '& .MuiRadio-root': {color: alpha('#000000', 0.38)},
-        } : {}}>
-          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-            <Grid item xs={12} sx={{ mt: 10 }}>
-              <HeaderText>Traffic management</HeaderText>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography>Data plane goes</Typography>
-            </Grid>
-            <Grid item xs={12} lg={2} />
-            <Grid item xs={12} lg={7}>
-              <RadioGroup
-                name="traffic-operator-radio-buttons-group"
-                value={selectedTraffic}
-                onChange={handleTrafficChange}
-              >
-                <FormControlLabel disabled={!isTrafficActive()} value="public" control={
-                  <Radio style={isTrafficActive() ? { color: 'black' } : {}} />
-                } label={
-                  <Typography sx={{ fontWeight: 'bold' }}>to public</Typography>
-                } />
-                <FormControlLabel disabled={!isTrafficActive()} value="VPN" control={
-                  <Radio style={isTrafficActive() ? { color: 'black' } : {}} />
-                } label={
-                  <Typography sx={{ fontWeight: 'bold' }}>to VPN</Typography>
-                } />
-                <BoxInsideRadio sx={selectedTraffic !== 'VPN' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
-                  <Box>
-                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 1, display: 'flex', alignItems: 'center' }}>
-                      <Grid item xs={12} lg={2} />
-                      <Grid item xs={12} lg={4}>
-                        <Typography>Address</Typography>
-                      </Grid>
-                      <Grid item xs={12} lg={6}>
-                        <StyledTextField disabled={selectedTraffic !== 'VPN'}
-                          sx={{ width: '100%' }}
-                          size="small"
-                          label="Address"
-                          defaultValue="0.0.0.0:3000"
-                          variant="outlined"
-                        />
-                      </Grid>
-                    </Grid>
-                  </Box>
-                  <Box>
-                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
-                      <Grid item xs={12} lg={2} />
-                      <Grid item xs={12} lg={4}>
-                        <Typography>Credentials</Typography>
-                      </Grid>
-                      <Grid item xs={12} lg={6}>
-                        <StyledTextField disabled={selectedTraffic !== 'VPN'}
-                          sx={{ width: '100%' }}
-                          size="small"
-                          label="Username"
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid item xs={12} lg={2} />
-                      <Grid item xs={12} lg={4} />
-                      <Grid item xs={12} lg={6}>
-                        <StyledTextField disabled={selectedTraffic !== 'VPN'}
-                          sx={{ width: '100%' }}
-                          size="small"
-                          label="Password"
-                          variant="outlined"
-                        />
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </BoxInsideRadio>
-              </RadioGroup>
-            </Grid>
-          </Grid>
-        </Box>
-        <Box sx={!isFallbackActive() ? {
-          '& .MuiTypography-root': { color: alpha('#000000', 0.38) },
-        } : {}}>
-          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-            <Grid item xs={12} sx={{ mt: 2 }}>
-              <HeaderText>Fallback scenario</HeaderText>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography>If VPN tunnel / your 3GPP core is down, data plane goes</Typography>
-            </Grid>
-            <Grid item xs={12} lg={2} />
-            <Grid item xs={12} lg={7}>
-              <RadioGroup
-                name="fallback-operator-radio-buttons-group"
-                value={selectedFallback}
-                onChange={handleFallbackChange}
-              >
-                <FormControlLabel disabled={!isFallbackActive()} value="nothing" control={
-                  <Radio style={isFallbackActive() ? { color: 'black' } : {}} />
-                } label={
-                  <Typography sx={{ fontWeight: 'bold' }}>to null (do nothing)</Typography>
-                } />
-                <FormControlLabel disabled={!isFallbackActive()} value="public" control={
-                  <Radio style={isFallbackActive() ? { color: 'black' } : {}} />
-                } label={
-                  <Typography sx={{ fontWeight: 'bold' }}>to public</Typography>
-                } />
-                <FormControlLabel disabled={!isFallbackActive()} value="VPN" control={
-                  <Radio style={isFallbackActive() ? { color: 'black' } : {}} />
-                } label={
-                  <Typography sx={{ fontWeight: 'bold' }}>to my backup core (VPN)</Typography>
-                } />
-                <BoxInsideRadio sx={selectedTraffic !== 'VPN' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
-                  <Box>
-                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 1, display: 'flex', alignItems: 'center' }}>
-                      <Grid item xs={12} lg={2} />
-                      <Grid item xs={12} lg={4}>
-                        <Typography>Address</Typography>
-                      </Grid>
-                      <Grid item xs={12} lg={6}>
-                        <StyledTextField disabled={selectedTraffic !== 'VPN'}
-                          sx={{ width: '100%' }}
-                          size="small"
-                          label="Address"
-                          defaultValue="0.0.0.0:3000"
-                          variant="outlined"
-                        />
-                      </Grid>
-                    </Grid>
-                  </Box>
-                  <Box>
-                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
-                      <Grid item xs={12} lg={2} />
-                      <Grid item xs={12} lg={4}>
-                        <Typography>Credentials</Typography>
-                      </Grid>
-                      <Grid item xs={12} lg={6}>
-                        <StyledTextField disabled={selectedTraffic !== 'VPN'}
-                          sx={{ width: '100%' }}
-                          size="small"
-                          label="Username"
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid item xs={12} lg={2} />
-                      <Grid item xs={12} lg={4} />
-                      <Grid item xs={12} lg={6}>
-                        <StyledTextField disabled={selectedTraffic !== 'VPN'}
-                          sx={{ width: '100%' }}
-                          size="small"
-                          label="Password"
-                          variant="outlined"
-                        />
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </BoxInsideRadio>
-              </RadioGroup>
-            </Grid>
-          </Grid>
-        </Box>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <ButtonsAtBottom />
         </Grid>
@@ -1242,7 +1269,7 @@ export default function TabsCreate() {
                         />
                       </Grid>
                       <Grid item xs={12} sx={{ mt: 2 }}>
-                        <Typography sx={{fontWeight: 'bold'}}>Fallback:</Typography>
+                        <Typography sx={{ fontWeight: 'bold' }}>Fallback:</Typography>
                       </Grid>
                       <Grid item xs={12} lg={6}>
                         <Typography>Select a fallback scenario in case the kernel functions are disabled on the subscriber's side</Typography>

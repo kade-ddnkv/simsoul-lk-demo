@@ -3,6 +3,7 @@ import { styled, Link, Divider, AppBar, Box, Toolbar, Typography, Button, IconBu
 import { useUser } from '@/auth/useUser';
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
+import { useRouter } from 'next/router'
 
 const OutlinedButton = styled(Button)({
   borderColor: 'white',
@@ -25,8 +26,11 @@ export default function Header(props: {
   useHomeButton: boolean,
   mainText: string,
   isBold: boolean,
+  noLine?: boolean,
+  noRight?: boolean,
 }) {
   const { user, logout } = useUser()
+  const router = useRouter()
 
   return (
     <>
@@ -51,19 +55,25 @@ export default function Header(props: {
           </>}
           <Typography component='div'><Box sx={props.isBold ? { fontWeight: 'bold' } : {}}>{props.mainText}</Box></Typography>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {user && <Typography sx={{fontSize: '14px', mr: 4}}>Account: {user?.email}</Typography>}
-          <OutlinedButton variant='outlined'>Leave feedback</OutlinedButton>
-          <OutlinedButton sx={{ ml: 1 }} variant='outlined' onClick={() => firebase.auth().signOut().then(logout)}>Sign out</OutlinedButton>
-        </Box>
+        {!props.noRight &&
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {user && <Typography sx={{ fontSize: '14px', mr: 4 }}>Account: {user?.email}</Typography>}
+            <OutlinedButton variant='outlined'>Leave feedback</OutlinedButton>
+            {user
+              ? <OutlinedButton sx={{ ml: 1 }} variant='outlined' onClick={() => firebase.auth().signOut().then(logout)}>Sign out</OutlinedButton>
+              : <OutlinedButton sx={{ ml: 1 }} variant='outlined' onClick={() => router.push('/signin')}>Sign in</OutlinedButton>}
+          </Box>
+        }
       </Box>
-      <hr
-        style={{
-          marginTop: 8,
-          backgroundColor: 'black',
-          height: 1
-        }}
-      />
+      {!props.noLine &&
+        <hr
+          style={{
+            marginTop: 8,
+            backgroundColor: 'black',
+            height: 1
+          }}
+        />
+      }
     </>
   );
 }
