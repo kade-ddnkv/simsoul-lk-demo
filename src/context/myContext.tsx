@@ -3,10 +3,10 @@ import { createContext, useState } from 'react';
 export const MyContext = createContext({});
 
 export const MyContextProvider = ({ children }) => {
-  const [lilo, setLilo] = useState('lilo');
+  const [geographyType, setGeographyType] = useState('point');
 
   return (
-    <MyContext.Provider value={{ lilo, setLilo }}>
+    <MyContext.Provider value={{ geographyType, setGeographyType }}>
       {children}
     </MyContext.Provider>
   );
