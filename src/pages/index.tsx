@@ -11,6 +11,7 @@ import { GetServerSidePropsContext } from 'next';
 import { useUser } from '@/auth/useUser';
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/database'
+import { useAuth } from '@/auth/authUserContext';
 
 // import { Inter } from 'next/font/google'
 // const inter = Inter({ subsets: ['latin'] })
@@ -48,7 +49,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 const IndexPage = () => {
-  const { user } = useUser()
+  const { user } = useAuth()
 
   const [slicesPreview, setSlicesPreview] = useState<any[]>([])
 

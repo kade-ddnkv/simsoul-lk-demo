@@ -23,7 +23,7 @@ export default function SignIn() {
   function onSubmit(event) {
     firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
-        router.push('/')
+        // router.push('/')
       })
       .catch((error) => {
         console.log(error)

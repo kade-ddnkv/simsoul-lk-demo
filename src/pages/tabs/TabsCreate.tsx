@@ -19,6 +19,7 @@ import firebase from 'firebase/compat/app'
 import 'firebase/compat/database'
 import { useUser } from '@/auth/useUser';
 import { MyContext } from '@/context/myContext';
+import { useAuth } from '@/auth/authUserContext';
 
 const StyledTab = styled(Tab)({
   ml: 4,
@@ -70,7 +71,7 @@ const ProceedButton = (props) => (
 )
 
 function SubmitButton() {
-  const { user } = useUser()
+  const { user } = useAuth()
 
   const { sliceName } = useContext(MyContext)
   const { selectedRadio } = useContext(MyContext)

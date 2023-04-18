@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import router from 'next/router';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
@@ -29,15 +29,14 @@ interface User {
 }
   
 const useUser = () => {
-  const [user, setUser] = useState<User>();
-  const router = useRouter();
+  const [user, setUser] = useState<User>()
 
   const logout = async () => {
     return firebase
       .auth()
       .signOut()
       .then(() => {
-        router.push('/');
+        router.push('/signin');
       })
       .catch(e => {
         console.error(e);
@@ -45,25 +44,31 @@ const useUser = () => {
   };
 
   useEffect(() => {
+    console.log('effect used')
     const cancelAuthListener = firebase
       .auth()
-      .onIdTokenChanged(async userToken => {
+      .onAuthStateChanged(async userToken => {
+        console.log('auth state changed')
+        console.log(userToken)
         if (userToken) {
           const userData = await mapUserData(userToken);
           setUserCookie(userData);
           setUser(userData);
+          console.log(router.asPath)
+          if (router.asPath === '/signin' || router.asPath === '/signup') {
+            router.push('/')
+          }
         } else {
           removeUserCookie();
-          setUser();
+          setUser(undefined);
         }
       });
 
-    const userFromCookie = getUserFromCookie();
-    if (!userFromCookie) {
-      return;
+    const userFromCookie = getUserFromCookie()
+    if (userFromCookie) {
+      setUser(userFromCookie)
     }
-    setUser(userFromCookie);
-    return () => { cancelAuthListener() };
+    return () => { console.log('effect cancelled'); cancelAuthListener() };
   }, []);
 
   return { user, logout };

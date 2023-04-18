@@ -4,6 +4,7 @@ import { useUser } from '@/auth/useUser';
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import { useRouter } from 'next/router'
+import { useAuth } from '@/auth/authUserContext';
 
 const OutlinedButton = styled(Button)({
   borderColor: 'white',
@@ -29,7 +30,7 @@ export default function Header(props: {
   noLine?: boolean,
   noRight?: boolean,
 }) {
-  const { user, logout } = useUser()
+  const { user, logout } = useAuth()
   const router = useRouter()
 
   return (
@@ -60,7 +61,7 @@ export default function Header(props: {
             {user && <Typography sx={{ fontSize: '14px', mr: 4 }}>Account: {user?.email}</Typography>}
             <OutlinedButton variant='outlined' onClick={() => router.push('/feedback')}>Leave feedback</OutlinedButton>
             {user
-              ? <OutlinedButton sx={{ ml: 1 }} variant='outlined' onClick={() => firebase.auth().signOut().then(logout)}>Sign out</OutlinedButton>
+              ? <OutlinedButton sx={{ ml: 1 }} variant='outlined' onClick={() => logout()}>Sign out</OutlinedButton>
               : <OutlinedButton sx={{ ml: 1 }} variant='outlined' onClick={() => router.push('/signin')}>Sign in</OutlinedButton>}
           </Box>
         }
