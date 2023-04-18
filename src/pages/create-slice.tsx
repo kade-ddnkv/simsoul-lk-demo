@@ -1,10 +1,11 @@
 import Head from 'next/head';
 import Header from '@/components/header';
 import { Box, Container } from '@mui/material';
-import TabsCreate from '@/components/tabs-create';
+import TabsCreate from '@/pages/tabs/TabsCreate';
 import withAuth from '@/auth/withUser';
 import { serverSideAuthCheck } from '@/auth/serverSideAuthCheck';
 import { GetServerSidePropsContext } from 'next';
+import { MyContextProvider } from '@/context/myContext';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return serverSideAuthCheck(context)

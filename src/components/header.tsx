@@ -34,7 +34,7 @@ export default function Header(props: {
 
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", minHeight: '36.5px' }}>
         <Box sx={{
           display: 'flex',
           alignItems: 'center',
@@ -58,7 +58,7 @@ export default function Header(props: {
         {!props.noRight &&
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {user && <Typography sx={{ fontSize: '14px', mr: 4 }}>Account: {user?.email}</Typography>}
-            <OutlinedButton variant='outlined'>Leave feedback</OutlinedButton>
+            <OutlinedButton variant='outlined' onClick={() => router.push('/feedback')}>Leave feedback</OutlinedButton>
             {user
               ? <OutlinedButton sx={{ ml: 1 }} variant='outlined' onClick={() => firebase.auth().signOut().then(logout)}>Sign out</OutlinedButton>
               : <OutlinedButton sx={{ ml: 1 }} variant='outlined' onClick={() => router.push('/signin')}>Sign in</OutlinedButton>}

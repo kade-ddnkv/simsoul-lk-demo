@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Link, Container, Button, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
 import { styled } from '@mui/system';
@@ -8,6 +8,9 @@ import withAuth from '@/auth/withUser';
 // import Link from 'next/link';
 import { serverSideAuthCheck } from '@/auth/serverSideAuthCheck';
 import { GetServerSidePropsContext } from 'next';
+import { useUser } from '@/auth/useUser';
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/database'
 
 // import { Inter } from 'next/font/google'
 // const inter = Inter({ subsets: ['latin'] })
@@ -37,7 +40,7 @@ const CreateButton = styled(Button)({
 })
 
 const StyledTableCell = styled(TableCell)({
-  fontWeight: 600
+  fontWeight: 600,
 })
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -45,21 +48,30 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 const IndexPage = () => {
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const { user } = useUser()
+
+  const [slicesPreview, setSlicesPreview] = useState<any[]>([])
+
+  useEffect(() => {
+    if (user) {
+      var slicesPreviewRef = firebase.database().ref('slices_preview/' + user?.id);
+      slicesPreviewRef.on('value', (snapshot) => {
+        const data = snapshot.val()
+        if (data) {
+          setSlicesPreview(Object.values(data))
+        }
+      });
+      return () => {
+        slicesPreviewRef.off('value');
+      };
+    }
+  }, [user])
 
   return (
     <>
       <Head>
         <title>My App</title>
       </Head>
-      {/* <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            My App
-          </Typography>
-          <Button color="inherit">Login</Button>
-        </Toolbar>
-      </AppBar> */}
       <Container maxWidth='xl' sx={{ mt: 2 }}>
         <Header mainText='Your personal slices' useHomeButton={false} isBold={true} />
         <CreateButton href='/create-slice' variant='outlined' sx={{ mt: 6 }}>+ Create new</CreateButton>
@@ -67,7 +79,7 @@ const IndexPage = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
+                <StyledTableCell>Name</StyledTableCell>
                 <StyledTableCell align="right">Running</StyledTableCell>
                 <StyledTableCell align="right">Type</StyledTableCell>
                 <StyledTableCell align="right">Geography</StyledTableCell>
@@ -75,17 +87,17 @@ const IndexPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.id} selected={selectedRows.includes(row.id)}>
+              {slicesPreview.map((slice) => (
+                <TableRow key={slice.name}>
                   <TableCell>
-                    <Link href='/slice' underline='none'>
-                      {row.name}
+                    <Link href={'/slice/' + slice.name} underline='none'>
+                      {slice.name}
                     </Link>
                   </TableCell>
-                  <TableCell align="right">{row.age}</TableCell>
-                  <TableCell align="right">{row.email}</TableCell>
-                  <TableCell align="right">{row.address}</TableCell>
-                  <TableCell align="right">{row.age}</TableCell>
+                  <TableCell align="right">{slice.running}</TableCell>
+                  <TableCell align="right">{slice.type}</TableCell>
+                  <TableCell align="right">{slice.geography}</TableCell>
+                  <TableCell align="right">{slice.started}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -1,7 +1,7 @@
 import React, { useMemo, useContext, useRef, useState } from 'react';
 import { GoogleMap, LoadScript, useLoadScript, Circle, DrawingManager } from '@react-google-maps/api';
-import { Box, Grid, Typography, FormControlLabel, RadioGroup, Radio } from '@mui/material';
-import { HeaderText, StyledButton } from './generalComponents';
+import { Box, Grid, Typography, FormControlLabel, RadioGroup, Radio, MenuItem } from '@mui/material';
+import { HeaderText, StyledButton, StyledTextField } from '@/components/generalComponents';
 import { MyContext } from '@/context/myContext';
 
 const containerStyle = {
@@ -119,6 +119,7 @@ const RenderMap = () => {
 
 function deleteShapes() {
   shapes.forEach(shape => shape.setMap(null))
+  shapes = []
   drawingManager.current.setOptions({ drawingControl: true })
 }
 
@@ -162,26 +163,39 @@ const RadioButtonsGeographyType = () => {
         onChange={handleGeographyTypeChange}
       >
         <FormControlLabel value="point" sx={{ mt: 0 }} control={
-          <Radio size='small' style={{ color: 'black' }} />
+          <Radio style={{ color: 'black' }} />
         } label={
           <Typography>particular point, building</Typography>
         } />
         <FormControlLabel value="region" control={
-          <Radio size='small' style={{ color: 'black' }} />
+          <Radio style={{ color: 'black' }} />
         } label={
           <Typography>selected region on the map</Typography>
         } />
-        <FormControlLabel value="country" control={
-          <Radio size='small' style={{ color: 'black' }} />
-        } label={
-          <Typography>country-wide</Typography>
-        } />
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <FormControlLabel value="country" control={
+            <Radio style={{ color: 'black' }} />
+          } label={
+            <Typography>country-wide</Typography>
+          } />
+          <StyledTextField disabled={geographyType !== 'country'}
+          sx={{ml: 1}}
+            size="small"
+            select
+            // label="Select"
+            defaultValue="nothing"
+          >
+            <MenuItem key='nearest' value='nothing'>country 1</MenuItem>
+            <MenuItem key='backup' value='backup'>country 2</MenuItem>
+            <MenuItem key='public' value='public'>country 3</MenuItem>
+          </StyledTextField>
+        </Box>
       </RadioGroup>
     </Box>
   )
 }
 
-export default function Geography({ buttonsAtBottom }) {
+function GeographyTab() {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyA74mDjm325UirYKxs5ui-9xyWhSDzIDjc",
     libraries: libraries,
@@ -197,7 +211,7 @@ export default function Geography({ buttonsAtBottom }) {
           <Grid item xs={12} lg={3} sx={{ mt: 1 }}>
             <Typography>Select one of 3 options:</Typography>
           </Grid>
-          <Grid item xs={12} lg={6}>
+          <Grid item xs={12} lg={9}>
             <RadioButtonsGeographyType />
           </Grid>
         </Grid>
@@ -205,10 +219,9 @@ export default function Geography({ buttonsAtBottom }) {
       <Grid item xs={12} lg={3} sx={{ pb: 1, width: '100%', display: 'flex', alignItems: 'flex-end' }}>
         <StyledButton variant='outlined' onClick={deleteShapes} sx={{ marginLeft: 'auto' }}>Clear map</StyledButton>
       </Grid>
-      <Grid item xs={12} sx={{ mt: 0, width: '100%', height: '60vh' }}>
+      <Grid item xs={12} sx={{ mt: 0, width: '100%', height: '65vh' }}>
         {children}
       </Grid>
-      {buttonsAtBottom}
     </Grid>
   )
 
@@ -218,3 +231,5 @@ export default function Geography({ buttonsAtBottom }) {
 
   return isLoaded ? <Wrapper>{<RenderMap />}</Wrapper> : <Wrapper><Typography>Loading...</Typography></Wrapper>;
 }
+
+export default React.memo(GeographyTab)
