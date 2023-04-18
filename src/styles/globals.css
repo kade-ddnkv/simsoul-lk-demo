@@ -1,23 +1,23 @@
-* {
+/* #__next * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
-}
+} */
 
-.MuiButtonBase-root {
+#__next .MuiButtonBase-root {
     text-transform: none;
 }
 
-.MuiTab-root {
+#__next .MuiTab-root {
     align-items: self-start;
     padding-right: 30px;
     padding-left: 8px;
 }
 
-.MuiOutlinedInput-root {
+#__next .MuiOutlinedInput-root {
     border-radius: 0;
 }
 
-.disabledText {
+#__next .disabledText {
     color: rgba(0, 0, 0, 0.38);
 }

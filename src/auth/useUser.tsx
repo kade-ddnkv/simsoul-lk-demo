@@ -44,12 +44,9 @@ const useUser = () => {
   };
 
   useEffect(() => {
-    console.log('effect used')
     const cancelAuthListener = firebase
       .auth()
       .onAuthStateChanged(async userToken => {
-        console.log('auth state changed')
-        console.log(userToken)
         if (userToken) {
           const userData = await mapUserData(userToken);
           setUserCookie(userData);
@@ -68,7 +65,7 @@ const useUser = () => {
     if (userFromCookie) {
       setUser(userFromCookie)
     }
-    return () => { console.log('effect cancelled'); cancelAuthListener() };
+    return () => { cancelAuthListener() };
   }, []);
 
   return { user, logout };

@@ -13,6 +13,7 @@ import { GetServerSidePropsContext } from 'next';
 import { useUser } from '@/auth/useUser';
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/database'
+import { useAuth } from '@/auth/authUserContext';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return serverSideAuthCheck(context)
@@ -20,7 +21,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function SlicePage() {
   const router = useRouter();
-  const { user } = useUser()
+  const { user } = useAuth()
   const { slice } = router.query;
 
   const [changesHappened, setChangesHappened] = useState(false)

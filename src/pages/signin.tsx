@@ -18,7 +18,6 @@ export default function SignIn() {
     console.log('submit')
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then(authUser => {
-        console.log(authUser)
         // router.push('/')
       })
       .catch((error) => {
@@ -41,7 +40,6 @@ export default function SignIn() {
             label="Email"
             variant="outlined"
             onChange={(event) => {
-              console.log('email')
               setEmail(event.target.value)
             }} />
           <StyledTextField
@@ -51,7 +49,6 @@ export default function SignIn() {
             label="Password"
             variant="outlined"
             onChange={(event) => {
-              console.log('password')
               setPassword(event.target.value)
             }} />
           <HoverBlackButton type='submit' sx={{ mt: 2 }} fullWidth variant='outlined'>Sign in</HoverBlackButton>
