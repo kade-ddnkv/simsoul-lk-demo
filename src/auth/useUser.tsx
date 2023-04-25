@@ -51,7 +51,6 @@ const useUser = () => {
           const userData = await mapUserData(userToken);
           setUserCookie(userData);
           setUser(userData);
-          console.log(router.asPath)
           if (router.asPath === '/signin' || router.asPath === '/signup') {
             router.push('/')
           }

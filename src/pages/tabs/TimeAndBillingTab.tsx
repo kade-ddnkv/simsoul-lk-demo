@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Grid, Typography, FormControlLabel, Checkbox, Box, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Radio, tableCellClasses, Paper, styled } from '@mui/material'
 import CheckBoxOutlineBlankSharpIcon from '@mui/icons-material/CheckBoxOutlineBlankSharp';
 import CheckBoxSharpIcon from '@mui/icons-material/CheckBoxSharp';
@@ -6,6 +6,7 @@ import { HeaderText, StyledTextField } from "@/components/generalComponents"
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { MyContext } from '@/context/myContext';
 
 const StyledTableCell = styled(TableCell)({
   fontSize: '16px'
@@ -29,10 +30,10 @@ const rows = [
 
 
 function TimeAndBillingTab() {
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
-  const [checkedEndDate, setCheckedEndDate] = useState(false)
-  const [selectedBilling, setSelectedBilling] = useState('daily')
+  const { startDate, setStartDate } = useContext(MyContext)
+  const { endDate, setEndDate } = useContext(MyContext)
+  const { checkedEndDate, setCheckedEndDate } = useContext(MyContext)
+  const { selectedBilling, setSelectedBilling } = useContext(MyContext)
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -101,7 +102,7 @@ function TimeAndBillingTab() {
                   <StyledTableCell></StyledTableCell>
                   <StyledTableCell></StyledTableCell>
                   <StyledTableCell align="right">Per week</StyledTableCell>
-                  <StyledTableCell align="right" sx={{color: checkedEndDate ? 'black' : 'white'}}>Full payment</StyledTableCell>
+                  <StyledTableCell align="right" sx={{ color: checkedEndDate ? 'black' : 'white' }}>Full payment</StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -127,7 +128,7 @@ function TimeAndBillingTab() {
                       {row.name}
                     </StyledTableCell>
                     <StyledTableCell align="right">{row.first}</StyledTableCell>
-                    <StyledTableCell align="right" sx={{color: checkedEndDate ? 'black' : 'white'}}>{row.second}</StyledTableCell>
+                    <StyledTableCell align="right" sx={{ color: checkedEndDate ? 'black' : 'white' }}>{row.second}</StyledTableCell>
                   </TableRow>
                 ))}
               </TableBody>

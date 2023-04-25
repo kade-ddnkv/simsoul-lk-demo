@@ -1,4 +1,4 @@
-import { styled, Typography, Button, TextField, Box } from '@mui/material';
+import { styled, Typography, Button, TextField, Box, alpha } from '@mui/material';
 
 const HeaderText = styled(Typography)({
   fontWeight: 'bold',
@@ -6,11 +6,18 @@ const HeaderText = styled(Typography)({
 })
 
 const StyledButton = styled(Button)({
-  borderColor: 'black',
+  // borderColor: 'black',
+  // borderRadius: 0,
+  // color: 'black',
+  // ':hover': {
+  //   backgroundColor: '#f0f0f0',
+  //   borderColor: 'black',
+  // }
+  borderColor: alpha('#000000', 0.12),
   borderRadius: 0,
   color: 'black',
   ':hover': {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fafafa',
     borderColor: 'black',
   }
 })

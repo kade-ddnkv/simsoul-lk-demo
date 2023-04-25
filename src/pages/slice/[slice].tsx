@@ -56,12 +56,15 @@ export default function SlicePage() {
   return (
     <>
       <Head>
-        <title>My App</title>
+        <title>{slice + ' / Settings'}</title>
       </Head>
       <Container maxWidth='xl' sx={{ mt: 2 }}>
         <Header mainText={(slice ? slice : '') + ' / Settings'} useHomeButton={true} isBold={true} />
         <Box sx={{ mt: 4 }}>
-          <TabsSettings />
+          {user
+            ? <TabsSettings />
+            : <Typography>Loading...</Typography>
+          }
         </Box>
       </Container>
     </>

@@ -1,4 +1,4 @@
-import React, { useMemo, useContext, useRef, useState } from 'react';
+import React, { useMemo, useContext, useRef, useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, useLoadScript, Circle, DrawingManager } from '@react-google-maps/api';
 import { Box, Grid, Typography, FormControlLabel, RadioGroup, Radio, MenuItem } from '@mui/material';
 import { HeaderText, StyledButton, StyledTextField } from '@/components/generalComponents';
@@ -10,11 +10,13 @@ const containerStyle = {
 };
 
 const center = {
-  lat: -3.745,
-  lng: -38.523
+  lat: 54.024003,
+  lng: -3.901981
 };
 
 const libraries = ["drawing"]
+
+let mapRef = undefined
 
 let shapes = []
 
@@ -38,7 +40,71 @@ function handleOverlayComplete(e) {
   drawingManager.current.setOptions({ drawingControl: false })
 }
 
+let countryLayer = null
+
+const onMapLoad = (map) => {
+  mapRef = map
+  countryLayer = map.getFeatureLayer('COUNTRY')
+}
+
+function handleCountrySelection(country) {
+  const countryInfo = {
+    Serbia: {
+      placeId: 'ChIJlYCJ8t8dV0cRXYYjN-pQXgU',
+      center: {
+        lat: 44.194459,
+        lng: 20.800463,
+      },
+      zoom: 7,
+    }
+  }
+
+  const featureStyleOptions: google.maps.FeatureStyleOptions = {
+    strokeColor: '#000000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2.0,
+    fillColor: '#8d9da6',
+    fillOpacity: 0.1
+  };
+
+  // Apply the style to a single boundary.
+  if (!countryInfo[country]) {
+    console.log('bad country passed to function handleCountrySelection')
+    return
+  }
+
+  mapRef.setCenter(countryInfo[country].center)
+  mapRef.setZoom(countryInfo[country].zoom)
+
+  countryLayer.style = (options: { feature: { placeId: string; }; }) => {
+    if (options.feature.placeId == countryInfo[country].placeId) {
+      return featureStyleOptions;
+    }
+  };
+}
+
+function resetContrySelection() {
+  countryLayer.style = null;
+}
+
+let drawingControlOptionsChangeable = {
+  position: undefined,
+  drawingModes: [''],
+}
+
+function changeDrawingModes(drawingModes: string[]) {
+  drawingControlOptionsChangeable.drawingModes = drawingModes
+  drawingManager.current.setOptions({
+    drawingControlOptionsChangeable
+  })
+}
+
 const RenderMap = () => {
+  drawingControlOptionsChangeable = {
+    position: google.maps.ControlPosition.TOP_RIGHT,
+    drawingModes: ['marker'],
+  }
+
   const svgMarker = {
     path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
     fillColor: "black",
@@ -51,31 +117,28 @@ const RenderMap = () => {
 
   const drawingManagerOptions = {
     drawingControl: true,
-    drawingControlOptions: {
-      // position: google.maps.ControlPosition.TOP_CENTER,
-      drawingModes: ['marker'],
-    },
+    drawingControlOptions: drawingControlOptionsChangeable,
     markerOptions: {
       icon: svgMarker,
       draggable: true,
     },
     circleOptions: {
-      fillColor: '#fefefe',
-      fillOpacity: 0.3,
+      fillColor: '#8d9da6',
+      fillOpacity: 0.1,
       strokeWeight: 2,
       draggable: true,
       editable: true,
     },
     rectangleOptions: {
-      fillColor: '#fefefe',
-      fillOpacity: 0.3,
+      fillColor: '#8d9da6',
+      fillOpacity: 0.1,
       strokeWeight: 2,
       draggable: true,
       editable: true,
     },
     polygonOptions: {
-      fillColor: '#fefefe',
-      fillOpacity: 0.3,
+      fillColor: '#8d9da6',
+      fillOpacity: 0.1,
       strokeWeight: 2,
       draggable: true,
       editable: true,
@@ -90,6 +153,9 @@ const RenderMap = () => {
     streetViewControl: false,
     rotateControl: false,
     fullscreenControl: true,
+    fullscreenControlOptions: {
+      position: google.maps.ControlPosition.LEFT_TOP,
+    },
   }
 
   return (
@@ -97,8 +163,9 @@ const RenderMap = () => {
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={7}
+        zoom={6}
         options={mapControlOptions}
+        onLoad={onMapLoad}
       >
         <DrawingManager
           onLoad={handlerLoadDrawingManager}
@@ -125,34 +192,31 @@ function deleteShapes() {
 
 const RadioButtonsGeographyType = () => {
   const { geographyType, setGeographyType } = useContext(MyContext)
+  const [country, setCountry] = useState('Serbia')
 
   const handleGeographyTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGeographyType(event.target.value)
     deleteShapes()
+    resetContrySelection()
     drawingManager.current.setDrawingMode(null)
     switch (event.target.value) {
       case 'point':
-        drawingManager.current.setOptions({
-          drawingControlOptions: {
-            drawingModes: ['marker'],
-          },
-        })
+        changeDrawingModes(['marker'])
         break
       case 'region':
-        drawingManager.current.setOptions({
-          drawingControlOptions: {
-            drawingModes: ['circle', 'rectangle', 'polygon'],
-          },
-        })
+        changeDrawingModes(['circle', 'rectangle', 'polygon'])
         break
       case 'country':
-        drawingManager.current.setOptions({
-          drawingControlOptions: {
-            drawingModes: [],
-          },
-        })
+        changeDrawingModes([])
+        handleCountrySelection(country)
         break
     }
+  }
+
+  const handleCountryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCountry(event.target.value)
+    resetContrySelection()
+    handleCountrySelection(event.target.value)
   }
 
   return (
@@ -179,15 +243,17 @@ const RadioButtonsGeographyType = () => {
             <Typography>country-wide</Typography>
           } />
           <StyledTextField disabled={geographyType !== 'country'}
-          sx={{ml: 1}}
+            sx={{ ml: 1 }}
             size="small"
             select
             // label="Select"
             defaultValue="nothing"
+            value={country}
+            onChange={handleCountryChange}
           >
-            <MenuItem key='nearest' value='nothing'>country 1</MenuItem>
-            <MenuItem key='backup' value='backup'>country 2</MenuItem>
-            <MenuItem key='public' value='public'>country 3</MenuItem>
+            <MenuItem key='Serbia' value='Serbia'>Serbia</MenuItem>
+            <MenuItem key='country 2' value='country 2'>country 2</MenuItem>
+            <MenuItem key='country 3' value='country 3'>country 3</MenuItem>
           </StyledTextField>
         </Box>
       </RadioGroup>
@@ -199,6 +265,9 @@ function GeographyTab() {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyA74mDjm325UirYKxs5ui-9xyWhSDzIDjc",
     libraries: libraries,
+    language: 'en',
+    version: 'beta',
+    region: 'RS',
   })
 
   const Wrapper = ({ children }) => (
@@ -211,7 +280,7 @@ function GeographyTab() {
           <Grid item xs={12} lg={3} sx={{ mt: 1 }}>
             <Typography>Select one of 3 options:</Typography>
           </Grid>
-          <Grid item xs={12} lg={9}>
+          <Grid item xs={12} lg={9} sx={{ pb: 1}}>
             <RadioButtonsGeographyType />
           </Grid>
         </Grid>

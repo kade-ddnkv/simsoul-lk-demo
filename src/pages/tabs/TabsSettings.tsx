@@ -19,6 +19,8 @@ import firebase from 'firebase/compat/app'
 import 'firebase/compat/database'
 import { useUser } from '@/auth/useUser';
 import { MyContext } from '@/context/myContext';
+import CloseIcon from '@mui/icons-material/Close';
+import CheckIcon from '@mui/icons-material/Check';
 
 const StyledTab = styled(Tab)({
   ml: 4,
@@ -53,16 +55,18 @@ function SaveButton() {
     <Button variant='outlined' sx={{
       mt: 1,
       width: '100%',
-      border: 0,
+      // border: 0,
       borderRadius: 0,
-      backgroundColor: '#d5eddb',
+      borderColor: '#79a67b',
+      // backgroundColor: alpha('#d5eddb', 0.2),
       color: 'black',
       ':hover': {
-        border: 0,
-        backgroundColor: '#74917c',
-        color: 'white'
+        // border: 0,
+        borderColor: 'black',
+        backgroundColor: '#e6fceb',
+        // color: 'white'
       }
-    }}>Save</Button>
+    }}><CheckIcon /><Box sx={{ pr: '12px' }}>Save changes</Box></Button>
   )
 }
 
@@ -86,22 +90,26 @@ function ResetButton() {
     <Button variant='outlined' sx={{
       mt: 1,
       width: '100%',
-      border: 0,
+      // border: 0,
       borderRadius: 0,
-      backgroundColor: '#eddddd',
+      borderColor: '#b56b60',
+      // backgroundColor: alpha('#eddddd', 0.5),
       color: 'black',
       ':hover': {
-        border: 0,
-        backgroundColor: '#917774',
-        color: 'white'
+        // border: 0,
+        // backgroundColor: '#917774',
+        // color: 'white'
+        borderColor: 'black',
+        backgroundColor: '#fce1e1',
       }
-    }}>Reset</Button>
+    }}>
+      <CloseIcon /><Box sx={{ pr: '8px' }}>Reset changes</Box>
+    </Button>
   )
 }
 
 export default function TabsSettings() {
   const [tabValue, setTabValue] = useState('1');
-  const router = useRouter();
 
   const handleTabChange = (event: React.SyntheticEvent, newTabValue: string) => {
     setTabValue(newTabValue);

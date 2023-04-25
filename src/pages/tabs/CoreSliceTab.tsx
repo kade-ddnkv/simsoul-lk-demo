@@ -87,11 +87,12 @@ function CoreSliceTab() {
               <Typography sx={{ fontWeight: 'bold' }}>Allocated resources on the operator's side, under the operator's control.</Typography>
             } />
             <BoxInsideRadio>
+              <Typography>I just need core slice to control my traffic.</Typography>
               <Box sx={selectedCore !== 'operator' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
                 <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
                   <Grid item xs={12} lg={2} />
                   <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
-                    <Typography>Data plane goes</Typography>
+                    <Typography>Route my data plane</Typography>
                   </Grid>
                   <Grid item xs={12} lg={6}>
                     <RadioGroup
@@ -102,7 +103,7 @@ function CoreSliceTab() {
                       <FormControlLabel disabled={selectedCore !== 'operator'} value="public" control={
                         <Radio style={selectedCore === 'operator' ? { color: 'black' } : {}} />
                       } label={
-                        <Typography>to public</Typography>
+                        <Typography>to public (Internet)</Typography>
                       } />
                       <FormControlLabel disabled={selectedCore !== 'operator'} value="VPN" control={
                         <Radio style={selectedCore === 'operator' ? { color: 'black' } : {}} />
@@ -117,7 +118,9 @@ function CoreSliceTab() {
                 <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
                   <Grid item xs={12} lg={2} />
                   <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
-                    <Typography>Fallback scenario</Typography>
+                    <Typography>Fallback scenario.</Typography>
+                    <Typography>If my VPN fails,</Typography>
+                    <Typography>route data plane</Typography>
                   </Grid>
                   <Grid item xs={12} lg={6}>
                     <RadioGroup
@@ -128,17 +131,17 @@ function CoreSliceTab() {
                       <FormControlLabel disabled={!isFallbackWithOperatorActive()} value="null" control={
                         <Radio style={isFallbackWithOperatorActive() ? { color: 'black' } : {}} />
                       } label={
-                        <Typography>to null (do nothing)</Typography>
+                        <Typography>to null (do nothing, drop traffic to null)</Typography>
                       } />
                       <FormControlLabel disabled={!isFallbackWithOperatorActive()} value="public" control={
                         <Radio style={isFallbackWithOperatorActive() ? { color: 'black' } : {}} />
                       } label={
-                        <Typography>to public</Typography>
+                        <Typography>to public (Internet)</Typography>
                       } />
                       <FormControlLabel disabled={!isFallbackWithOperatorActive()} value="VPN" control={
                         <Radio style={isFallbackWithOperatorActive() ? { color: 'black' } : {}} />
                       } label={
-                        <Typography>to VPN</Typography>
+                        <Typography>to backup VPN</Typography>
                       } />
                     </RadioGroup>
                   </Grid>
@@ -284,6 +287,7 @@ function CoreSliceTab() {
               <Typography sx={{ fontWeight: 'bold' }}>Allocated resources in the local (operator's) data center.</Typography>
             } />
             <BoxInsideRadio>
+              <Typography>I want my slice resources to be located in the selected data center to reduce latency or provide higher connectivity speed.</Typography>
               <Box sx={selectedCore !== 'local' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
                 <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
                   <Grid item xs={12} lg={2} />
@@ -296,10 +300,11 @@ function CoreSliceTab() {
                       size="small"
                       select
                       label="Select"
-                      defaultValue="1"
+                      defaultValue="nearest"
                     >
                       <MenuItem key='nearest' value='nearest'>Nearest</MenuItem>
-                      <MenuItem key='1' value='1'>221B Baker Street, London</MenuItem>
+                      <MenuItem key='1' value='1'>Војводе Пријезде 20, Београд, Serbia</MenuItem>
+                      <MenuItem key='2' value='2'>Јанка Чмелика 105, Нови Сад, Serbia</MenuItem>
                     </StyledTextField>
                   </Grid>
                 </Grid>
@@ -308,7 +313,7 @@ function CoreSliceTab() {
                 <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
                   <Grid item xs={12} lg={2} />
                   <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
-                    <Typography>Data plane goes</Typography>
+                    <Typography>Route my data plane</Typography>
                   </Grid>
                   <Grid item xs={12} lg={6}>
                     <RadioGroup
@@ -319,7 +324,7 @@ function CoreSliceTab() {
                       <FormControlLabel disabled={selectedCore !== 'local'} value="public" control={
                         <Radio style={selectedCore === 'local' ? { color: 'black' } : {}} />
                       } label={
-                        <Typography>to public</Typography>
+                        <Typography>to public (Internet)</Typography>
                       } />
                       <FormControlLabel disabled={selectedCore !== 'local'} value="VPN" control={
                         <Radio style={selectedCore === 'local' ? { color: 'black' } : {}} />
@@ -334,7 +339,9 @@ function CoreSliceTab() {
                 <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
                   <Grid item xs={12} lg={2} />
                   <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
-                    <Typography>Fallback scenario</Typography>
+                    <Typography>Fallback scenario.</Typography>
+                    <Typography>If my VPN fails,</Typography>
+                    <Typography>route data plane</Typography>
                   </Grid>
                   <Grid item xs={12} lg={6}>
                     <RadioGroup
@@ -345,17 +352,17 @@ function CoreSliceTab() {
                       <FormControlLabel disabled={!isFallbackWithLocalActive()} value="null" control={
                         <Radio style={isFallbackWithLocalActive() ? { color: 'black' } : {}} />
                       } label={
-                        <Typography>to null (do nothing)</Typography>
+                        <Typography>to null (do nothing, drop traffic to null)</Typography>
                       } />
                       <FormControlLabel disabled={!isFallbackWithLocalActive()} value="public" control={
                         <Radio style={isFallbackWithLocalActive() ? { color: 'black' } : {}} />
                       } label={
-                        <Typography>to public</Typography>
+                        <Typography>to public (Internet)</Typography>
                       } />
                       <FormControlLabel disabled={!isFallbackWithLocalActive()} value="VPN" control={
                         <Radio style={isFallbackWithLocalActive() ? { color: 'black' } : {}} />
                       } label={
-                        <Typography>to VPN</Typography>
+                        <Typography>to backup VPN</Typography>
                       } />
                     </RadioGroup>
                   </Grid>
@@ -366,11 +373,12 @@ function CoreSliceTab() {
               <Typography sx={{ fontWeight: 'bold' }}>Transfer some core resources to the my local platform.</Typography>
             } />
             <BoxInsideRadio>
+              <Typography>I want full control over core slice for security or some other reasons, I want to run core on premices.</Typography>
               <Box sx={selectedCore !== 'transfer' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
                 <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
                   <Grid item xs={12} lg={2} />
                   <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
-                    <Typography>Which core will be used?</Typography>
+                    <Typography>Which 5G core software will be used?</Typography>
                   </Grid>
                   <Grid item xs={12} lg={6}>
                     <RadioGroup
@@ -381,12 +389,12 @@ function CoreSliceTab() {
                       <FormControlLabel disabled={selectedCore !== 'transfer'} value="operator" control={
                         <Radio style={selectedCore === 'transfer' ? { color: 'black' } : {}} />
                       } label={
-                        <Typography sx={{ fontWeight: 'bold' }}>Download and use operator's core</Typography>
+                        <Typography>Download and use operator's core software</Typography>
                       } />
                       <FormControlLabel disabled={selectedCore !== 'transfer'} value="own" control={
                         <Radio style={selectedCore === 'transfer' ? { color: 'black' } : {}} />
                       } label={
-                        <Typography sx={{ fontWeight: 'bold' }}>Use my own 3GPP-compatible core</Typography>
+                        <Typography>Use my own 3GPP-compatible core software</Typography>
                       } />
                     </RadioGroup>
                   </Grid>
@@ -396,7 +404,8 @@ function CoreSliceTab() {
                 <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
                   <Grid item xs={12} lg={2} />
                   <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
-                    <Typography>Fallback scenario</Typography>
+                    <Typography>Fallback scenario.</Typography>
+                    <Typography>If my local core fails, route</Typography>
                   </Grid>
                   <Grid item xs={12} lg={6}>
                     <RadioGroup
@@ -407,17 +416,17 @@ function CoreSliceTab() {
                       <FormControlLabel disabled={!isFallbackWithTransferActive()} value="null" control={
                         <Radio style={isFallbackWithTransferActive() ? { color: 'black' } : {}} />
                       } label={
-                        <Typography>to null (do nothing)</Typography>
+                        <Typography>to null (do nothing, drop traffic to null)</Typography>
                       } />
                       <FormControlLabel disabled={!isFallbackWithTransferActive()} value="public" control={
                         <Radio style={isFallbackWithTransferActive() ? { color: 'black' } : {}} />
                       } label={
-                        <Typography>to public</Typography>
+                        <Typography>Activate operator's core slice and route traffic to public (Internet)</Typography>
                       } />
                       <FormControlLabel disabled={!isFallbackWithTransferActive()} value="VPN" control={
                         <Radio style={isFallbackWithTransferActive() ? { color: 'black' } : {}} />
                       } label={
-                        <Typography>to VPN</Typography>
+                        <Typography>Activate operator's core slice and route traffic to backup VPN</Typography>
                       } />
                     </RadioGroup>
                   </Grid>
@@ -430,6 +439,7 @@ function CoreSliceTab() {
           </RadioGroup>
         </Grid>
       </Grid>
+      <Box sx={{ mb: 2 }} />
     </Box >
   )
 }

@@ -49,7 +49,7 @@ function RadioSliceTab() {
                   <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
                     <Grid item xs={12} lg={2} />
                     <Grid item xs={12} lg={4}>
-                      <Typography>Bandwidth</Typography>
+                      <Typography>Total bandwidth per slice</Typography>
                     </Grid>
                     <Grid item xs={12} lg={4}>
                       <StyledTextField disabled={selectedRadio !== 'per_slice'}
@@ -72,8 +72,8 @@ function RadioSliceTab() {
                       <StyledTextField disabled
                         sx={{ width: '100%' }}
                         size="small"
-                        label="Gbps"
-                        defaultValue="300"
+                        label="Number of devices"
+                        defaultValue="1250"
                         variant="outlined"
                       />
                     </Grid>
@@ -146,7 +146,7 @@ function RadioSliceTab() {
                   <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
                     <Grid item xs={12} lg={2} />
                     <Grid item xs={12} lg={4}>
-                      <Typography>Bandwidth for each device</Typography>
+                      <Typography>Bandwidth per slice</Typography>
                     </Grid>
                     <Grid item xs={12} lg={4}>
                       <StyledTextField disabled={selectedRadio !== 'density'}
@@ -167,10 +167,10 @@ function RadioSliceTab() {
             <FormControlLabel value="nothing" control={<Radio style={{ color: 'black' }} />} label={
               <Typography sx={{ fontWeight: 'bold' }}>I don't need a radio slice</Typography>
             } />
-            <Box sx={{ mb: 2 }}></Box>
           </RadioGroup>
         </Grid>
       </Grid>
+      <Box sx={{ mb: 2 }} />
     </Box>
   )
 }

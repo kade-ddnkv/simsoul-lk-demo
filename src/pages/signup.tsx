@@ -54,9 +54,10 @@ export default function SignIn() {
             variant="outlined"
             onChange={handlePasswordChange} />
           <HoverBlackButton type='submit' sx={{ mt: 2 }} fullWidth variant='outlined'>Sign up</HoverBlackButton>
-          <Typography sx={{mt: 2, fontSize: '14px'}}>You will receive an email to complete the registration.</Typography>
-          <Link sx={{ mt: 2 }} href='/signin' underline='none'><Typography sx={{ color: 'black', fontSize: '14px' }}>Already have an account?</Typography></Link>
-          <Link sx={{ mt: 10, mb: -12 }} href='/info' underline='none'><Typography sx={{ color: 'black', fontSize: '14px' }}>What is the purpose of this demo and how to use it?</Typography></Link>
+          {/* <Typography sx={{mt: 2, fontSize: '14px'}}>You will receive an email to complete the registration.</Typography> */}
+          {/* <Link sx={{ mt: 2 }} href='/signin' underline='none'><Typography sx={{ color: 'black', fontSize: '14px' }}>Already have an account?</Typography></Link> */}
+          <Link sx={{ mt: 2 }} href='/signin'><Typography sx={{ fontSize: '14px' }}>Already have an account?</Typography></Link>
+          <Link sx={{ mt: 10, mb: -12 }} href='/info'><Typography sx={{ fontSize: '14px' }}>What is the purpose of this demo and how to use it?</Typography></Link>
         </Box>
       </Container>
     </>

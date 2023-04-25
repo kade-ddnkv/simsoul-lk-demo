@@ -52,8 +52,8 @@ export default function SignIn() {
               setPassword(event.target.value)
             }} />
           <HoverBlackButton type='submit' sx={{ mt: 2 }} fullWidth variant='outlined'>Sign in</HoverBlackButton>
-          <Link sx={{ mt: 2 }} href='/signup' underline='none'><Typography sx={{ color: 'black', fontSize: '14px' }}>Don't have an account?</Typography></Link>
-          <Link sx={{ mt: 10, mb: -12 }} href='/info' underline='none'><Typography sx={{ color: 'black', fontSize: '14px' }}>What is the purpose of this demo and how to use it?</Typography></Link>
+          <Link sx={{ mt: 2 }} href='/signup'><Typography sx={{ fontSize: '14px' }}>Create account</Typography></Link>
+          <Link sx={{ mt: 10, mb: -12 }} href='/info'><Typography sx={{ fontSize: '14px' }}>What is the purpose of this demo and how to use it?</Typography></Link>
         </Box>
       </Container>
     </>

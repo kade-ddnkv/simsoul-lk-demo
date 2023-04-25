@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Link, Container, Button, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
+import { Box, Link, Container, Button, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
 import { styled } from '@mui/system';
 import { alpha } from "@mui/material";
 import Header from '@/components/header';
@@ -12,6 +12,7 @@ import { useUser } from '@/auth/useUser';
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/database'
 import { useAuth } from '@/auth/authUserContext';
+import AddIcon from '@mui/icons-material/Add';
 
 // import { Inter } from 'next/font/google'
 // const inter = Inter({ subsets: ['latin'] })
@@ -71,11 +72,13 @@ const IndexPage = () => {
   return (
     <>
       <Head>
-        <title>My App</title>
+        <title>My Slices</title>
       </Head>
       <Container maxWidth='xl' sx={{ mt: 2 }}>
         <Header mainText='Your personal slices' useHomeButton={false} isBold={true} />
-        <CreateButton href='/create-slice' variant='outlined' sx={{ mt: 6 }}>+ Create new</CreateButton>
+        <CreateButton href='/create-slice' variant='outlined' sx={{ mt: 6 }}>
+          + Create new
+        </CreateButton>
         <Paper sx={{ mt: 2, mx: 'auto', borderRadius: 0 }} variant='outlined' elevation={0}>
           <Table>
             <TableHead>

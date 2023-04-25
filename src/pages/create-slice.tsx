@@ -15,7 +15,7 @@ const CreateSlice = () => {
   return (
     <>
       <Head>
-        <title>My App</title>
+        <title>Creating a new slice</title>
       </Head>
       <Container maxWidth='xl' sx={{ mt: 2 }}>
         <Header mainText='Creating a new slice' useHomeButton={true} isBold={true} />

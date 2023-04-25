@@ -11,7 +11,6 @@ import { HeaderText, StyledButton, StyledTextField, BoxInsideRadio } from '@/com
 import { MyContext } from '@/context/myContext';
 
 function ConfigurationTab() {
-  const { sliceName, setSliceName } = useContext(MyContext)
   const { selectedCore, setSelectedCore } = useContext(MyContext)
   const { selectedRadio, setSelectedRadio } = useContext(MyContext)
   const { selectedTrafficWithOperator, setSelectedTrafficWithOperator } = useContext(MyContext)
@@ -42,20 +41,6 @@ function ConfigurationTab() {
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item xs={12}>
           <HeaderText>Configuration</HeaderText>
-        </Grid>
-        <Grid item xs={12} lg={2} sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography>Slice name</Typography>
-        </Grid>
-        <Grid item xs={12} lg={7}>
-          <StyledTextField
-            sx={{ width: '100%' }}
-            size="small"
-            label="Slice name"
-            variant="outlined"
-            onBlur={(event) => {
-              setSliceName(event.target.value)
-            }}
-          />
         </Grid>
         <Grid item xs={12} sx={{ mt: 4 }} />
         <Grid item xs={12}>

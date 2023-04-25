@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Button, Grid, TextField, Tabs, Tab, Box, Typography, Divider, styled } from '@mui/material';
+import { Button, Grid, TextField, Tabs, Tab, Box, Typography, Divider, styled, Stack } from '@mui/material';
 import { Radio, RadioGroup, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
 import CheckBoxOutlineBlankSharpIcon from '@mui/icons-material/CheckBoxOutlineBlankSharp';
 import CheckBoxSharpIcon from '@mui/icons-material/CheckBoxSharp';
@@ -20,6 +20,7 @@ import 'firebase/compat/database'
 import { useUser } from '@/auth/useUser';
 import { MyContext } from '@/context/myContext';
 import { useAuth } from '@/auth/authUserContext';
+import GeneralTab from './GeneralTab';
 
 const StyledTab = styled(Tab)({
   ml: 4,
@@ -43,7 +44,8 @@ const StyledTab = styled(Tab)({
 
 const BackButton = (props) => (
   <Button onClick={props.onClick} variant='outlined' sx={{
-    width: '100%',
+    // width: '100%',
+    px: 4,
     borderColor: 'black',
     borderRadius: 0,
     color: 'black',
@@ -56,7 +58,8 @@ const BackButton = (props) => (
 
 const ProceedButton = (props) => (
   <Button onClick={props.onClick} variant='outlined' sx={{
-    width: '100%',
+    // width: '100%',
+    px: 4,
     borderColor: 'black',
     borderRadius: 0,
     borderWidth: 2,
@@ -96,7 +99,7 @@ function SubmitButton() {
         storeNewSlice()
         router.push('/')
       }
-    }>Submit and create slice</ProceedButton>
+    }>Submit configuration</ProceedButton>
   )
 }
 
@@ -123,30 +126,38 @@ export default function TabsCreate() {
   }
 
   const ButtonsAtBottom = (props: { proceedButton?}) => (
-    <Box sx={{ width: '100%', marginTop: 'auto' }}>
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item xs={12} sx={{ mt: 4, mb: 6 }}>
-          <Grid container columnSpacing={1} sx={{ display: 'flex', alignItems: 'center' }}>
-            <Grid item lg={1}>
-              <BackButton onClick={onBackClick}>Back</BackButton>
-            </Grid>
-            <Grid item lg={2}>
-              {props.proceedButton
-                ? props.proceedButton
-                : <ProceedButton onClick={onProceedClick}>Proceed</ProceedButton>}
-            </Grid>
-          </Grid>
-        </Grid >
-      </Grid>
+    // <Box sx={{ width: '100%', marginTop: 'auto' }}>
+    //   <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+    //     <Grid item xs={12} sx={{ mt: 4, mb: 6 }}>
+    //       <Grid container columnSpacing={1} sx={{ display: 'flex', alignItems: 'center' }}>
+    //         <Grid item lg={1}>
+    //           <BackButton onClick={onBackClick}>Back</BackButton>
+    //         </Grid>
+    //         <Grid item lg={2}>
+    //           {props.proceedButton
+    //             ? props.proceedButton
+    //             : <ProceedButton onClick={onProceedClick}>Proceed</ProceedButton>}
+    //         </Grid>
+    //       </Grid>
+    //     </Grid >
+    //   </Grid>
+    // </Box>
+    <Box sx={{ marginTop: 'auto' }}>
+      <Stack sx={{ mt: 4, mb: 6 }} direction='row' spacing={1}>
+        <BackButton onClick={onBackClick}>Back</BackButton>
+        {props.proceedButton
+          ? props.proceedButton
+          : <ProceedButton onClick={onProceedClick}>Proceed</ProceedButton>}
+      </Stack>
     </Box>
   )
 
   const [viewportHeight, setViewportHeight] = useState<number>();
 
   React.useEffect(() => {
-    setViewportHeight(window.innerHeight - 2 - 8 - 36.5 - 16 - 32 - 16)
+    setViewportHeight(window.innerHeight - 2 - 8 - 36.5 - 16 - 32 - 16 - 10)
     function handleResize() {
-      setViewportHeight(window.innerHeight);
+      setViewportHeight(window.innerHeight - 2 - 8 - 36.5 - 16 - 32 - 16 - 10);
     }
     window.addEventListener('resize', handleResize);
     return () => {
@@ -168,41 +179,49 @@ export default function TabsCreate() {
           onChange={handleTabChange}
           sx={{ borderRight: 0, borderColor: 'divider', display: 'flex', overflow: 'visible' }}
         >
-          <StyledTab disabled sx={{}} label="Steps" value='0' />
-          <StyledTab label="Radio slice" value='1' />
-          <StyledTab label="Core slice" value='2' />
-          <StyledTab label="Geography" value='3' />
-          <StyledTab label="Time and billing" value='4' />
-          <StyledTab label="Summary" value='5' />
-          <StyledTab label="Configuration" value='6' />
+          <StyledTab disabled sx={{}} label="Steps" />
+          <StyledTab label="General" value="1" />
+          <StyledTab label="Radio slice" value='2' />
+          <StyledTab label="Core slice" value='3' />
+          <StyledTab label="Geography" value='4' />
+          <StyledTab label="Time and billing" value='5' />
+          <StyledTab label="Summary" value='6' />
+          <StyledTab label="Configuration" value='7' />
         </TabList>
         <Box sx={{ flexGrow: 1 }}>
-          <TabPanel value='0' />
           <TabPanel value='1'>
+            {viewportHeight &&
+              <Box sx={{ minHeight: viewportHeight, display: 'flex', flexDirection: 'column' }}>
+                <GeneralTab />
+                <ButtonsAtBottom />
+              </Box>
+            }
+          </TabPanel>
+          <TabPanel value='2'>
             <RadioSliceTab />
             <ButtonsAtBottom />
           </TabPanel>
-          <TabPanel value='2'>
+          <TabPanel value='3'>
             <CoreSliceTab />
             <ButtonsAtBottom />
           </TabPanel>
-          <TabPanel value='3'>
+          <TabPanel value='4'>
             <GeographyTab />
             <ButtonsAtBottom />
           </TabPanel>
-          <TabPanel value='4'>
+          <TabPanel value='5'>
             <Box sx={{ minHeight: viewportHeight, display: 'flex', flexDirection: 'column' }}>
               <TimeAndBillingTab />
               <ButtonsAtBottom />
             </Box>
           </TabPanel>
-          <TabPanel value='5'>
+          <TabPanel value='6'>
             <Box sx={{ minHeight: viewportHeight, display: 'flex', flexDirection: 'column' }}>
               <SummaryTab />
-              <ButtonsAtBottom />
+              <ButtonsAtBottom proceedButton={<ProceedButton onClick={onProceedClick}>Create slice and proceed to slice configuration</ProceedButton>} />
             </Box>
           </TabPanel>
-          <TabPanel value='6'>
+          <TabPanel value='7'>
             <ConfigurationTab />
             <ButtonsAtBottom proceedButton={<SubmitButton />} />
           </TabPanel>
