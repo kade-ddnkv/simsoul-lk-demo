@@ -34,7 +34,7 @@ export default function SignIn() {
   return (
     <>
       <Container maxWidth='xl' sx={{ mt: 2 }}>
-        <Header mainText='simsoul demo' noLine noRight useHomeButton={false} isBold={false} />
+        <Header mainText='simsoul 5G slicing demo' noLine noRight useHomeButton={false} isBold={false} />
       </Container>
       <Container maxWidth='xs' sx={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Box component='form' onSubmit={onSubmit} sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -52,6 +52,7 @@ export default function SignIn() {
             size="small"
             label="Password"
             variant="outlined"
+            type='password'
             onChange={handlePasswordChange} />
           <HoverBlackButton type='submit' sx={{ mt: 2 }} fullWidth variant='outlined'>Sign up</HoverBlackButton>
           {/* <Typography sx={{mt: 2, fontSize: '14px'}}>You will receive an email to complete the registration.</Typography> */}

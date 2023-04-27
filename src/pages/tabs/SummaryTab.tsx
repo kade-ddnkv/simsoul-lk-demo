@@ -4,10 +4,13 @@ import { Grid, Typography, Box } from '@mui/material'
 import { HeaderText } from '@/components/generalComponents'
 
 function SummaryTab() {
-  const { selectedRadio } = useContext(MyContext)
+  const { selectedRadio, 
+    bandwidthWithPerSlice, numberOfDevicesWithPerSlice, 
+    bandwidthWithPerDevice, numberOfDevicesWithPerDevice, 
+    bandwidthWithDensity, numberOfDevicesWithDensity } = useContext(MyContext)
   const { selectedCore,
     selectedTrafficWithOperator, selectedFallbackWithOperator,
-    selectedTrafficWithLocal, selectedFallbackWithLocal,
+    selectedDataCenterWithLocal, selectedTrafficWithLocal, selectedFallbackWithLocal,
     selectedTransferCore, selectedFallbackWithTransfer } = useContext(MyContext)
   const { geographyType } = useContext(MyContext)
   const { startDate, endDate, checkedEndDate } = useContext(MyContext)
@@ -39,6 +42,17 @@ function SummaryTab() {
     }
   }
 
+  function geographySummary() {
+    switch (geographyType) {
+      case 'point':
+        return 'One point: .'
+      case 'region':
+        return 'Region in country: .'
+      case 'country':
+        return 'Country: .'
+    }
+  }
+
   const NotSelected = () => { return <Box sx={{ color: 'red' }} display='inline'>{'[Not selected]'}</Box> }
 
   return (
@@ -56,6 +70,24 @@ function SummaryTab() {
         </Grid>
         <Grid item xs={12} lg={10.5}>
           <Typography>{radioSummary()}</Typography>
+          {selectedRadio === 'per_slice' &&
+            <>
+              <Typography>Total bandwidth per slice: {bandwidthWithPerSlice + 'Gbps'}.</Typography>
+              <Typography>Max number of devices (estimated): {numberOfDevicesWithPerSlice}.</Typography>
+            </>
+          }
+          {selectedRadio === 'per_device' &&
+            <>
+              <Typography>Number of devices: {numberOfDevicesWithPerDevice}.</Typography>
+              <Typography>Bandwidth for each device: {bandwidthWithPerDevice + 'Mbps'}.</Typography>
+            </>
+          }
+          {selectedRadio === 'density' &&
+            <>
+              <Typography>Number of devices: {numberOfDevicesWithDensity}.</Typography>
+              <Typography>Bandwidth per slice: {bandwidthWithDensity}.</Typography>
+            </>
+          }
         </Grid>
         <Grid item xs={12} sx={{ mt: 1 }} />
         <Grid item xs={12} lg={1.5}>
@@ -63,29 +95,61 @@ function SummaryTab() {
         </Grid>
         <Grid item xs={12} lg={10.5}>
           <Typography>{coreSummary()}</Typography>
-          <Box>
-            <Typography component='span'>Route data plane: </Typography>
-            <Typography display='inline'>to VPN</Typography>
-          </Box>
-          <Box>
-            <Typography component='span'>Fallback scenario: </Typography>
-            <Typography display='inline'>to public</Typography>
-          </Box>
+          {selectedCore === 'operator' &&
+            <>
+              <Box>
+                <Typography component='span'>Route my data plane: </Typography>
+                <Typography display='inline'>to {selectedTrafficWithOperator}.</Typography>
+              </Box>
+              {selectedTrafficWithOperator === 'VPN' &&
+                <Box>
+                  <Typography component='span'>Fallback scenario: </Typography>
+                  <Typography display='inline'>to {selectedFallbackWithOperator}.</Typography>
+                </Box>
+              }
+            </>
+          }
+          {selectedCore === 'local' &&
+            <>
+              <Box>
+                <Typography>Selected data center: {selectedDataCenterWithLocal}.</Typography>
+              </Box>
+              <Box>
+                <Typography component='span'>Route my data plane: </Typography>
+                <Typography display='inline'>to {selectedTrafficWithLocal}.</Typography>
+              </Box>
+              {selectedTrafficWithLocal === 'VPN' &&
+                <Box>
+                  <Typography component='span'>Fallback scenario: </Typography>
+                  <Typography display='inline'>to {selectedFallbackWithLocal}.</Typography>
+                </Box>
+              }
+            </>
+          }
+          {selectedCore === 'transfer' &&
+            <>
+              <Box>
+                <Typography>5G core software: {selectedTransferCore === 'operator' ? 'from operator' : 'my own'}.</Typography>
+              </Box>
+              <Box>
+                <Typography>Fallback scenario: to {selectedFallbackWithTransfer}.</Typography>
+              </Box>
+            </>
+          }
         </Grid>
         <Grid item xs={12} sx={{ mt: 1 }} />
         <Grid item xs={12} lg={1.5}>
           <Typography sx={{ fontWeight: 'bold' }}>Geography: </Typography>
         </Grid>
         <Grid item xs={12} lg={10.5}>
-          <Typography component='span'>One building: </Typography>
-          <Typography display='inline'>{'<address>'}</Typography>
+          <Typography>{geographySummary()}</Typography>
         </Grid>
         <Grid item xs={12} sx={{ mt: 1 }} />
         <Grid item xs={12} lg={1.5}>
           <Typography sx={{ fontWeight: 'bold' }}>Dates of work: </Typography>
         </Grid>
         <Grid item xs={12} lg={10.5}>
-          <Typography component='span'>From {!startDate && <NotSelected />} {checkedEndDate ? ' to ' : ' until stopped'} {checkedEndDate && !endDate && <NotSelected />}</Typography>
+          <Typography component='span'>From {startDate ? startDate.format('DD/MM/YYYY') : <NotSelected />} {checkedEndDate ? ' to ' : ' until stopped'} {checkedEndDate && !endDate && <NotSelected />}</Typography>
         </Grid>
         <Grid item xs={12} sx={{ mt: 1 }} />
         <Grid item xs={12} lg={1.5}>

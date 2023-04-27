@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, Grid, TextField, Tabs, Tab, Box, Typography, Divider, styled } from '@mui/material';
 import { Radio, RadioGroup, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
 import CheckBoxOutlineBlankSharpIcon from '@mui/icons-material/CheckBoxOutlineBlankSharp';
@@ -12,6 +12,12 @@ import { MyContext } from '@/context/myContext';
 
 function RadioSliceTab() {
   const { selectedRadio, setSelectedRadio } = useContext(MyContext);
+  const { bandwidthWithPerSlice, setBandwidthWithPerSlice } = useContext(MyContext);
+  const { numberOfDevicesWithPerSlice } = useContext(MyContext);
+  const { bandwidthWithPerDevice, setBandwidthWithPerDevice } = useContext(MyContext);
+  const { numberOfDevicesWithPerDevice, setNumberOfDevicesWithPerDevice } = useContext(MyContext);
+  const { bandwidthWithDensity, setBandwidthWithDensity } = useContext(MyContext);
+  const { numberOfDevicesWithDensity, setNumberOfDevicesWithDensity } = useContext(MyContext);
 
   const theme = useTheme();
   const isLg = useMediaQuery(theme.breakpoints.up('lg'));
@@ -56,8 +62,10 @@ function RadioSliceTab() {
                         sx={{ width: '100%' }}
                         size="small"
                         label="Gbps"
-                        defaultValue="300"
+                        defaultValue={bandwidthWithPerSlice}
                         variant="outlined"
+                        type='number'
+                        onBlur={(event) => setBandwidthWithPerSlice(event.target.value)}
                       />
                     </Grid>
                   </Grid>
@@ -73,8 +81,9 @@ function RadioSliceTab() {
                         sx={{ width: '100%' }}
                         size="small"
                         label="Number of devices"
-                        defaultValue="1250"
+                        defaultValue={numberOfDevicesWithPerSlice}
                         variant="outlined"
+                        type='number'
                       />
                     </Grid>
                   </Grid>
@@ -95,9 +104,11 @@ function RadioSliceTab() {
                       <StyledTextField disabled={selectedRadio !== 'per_device'}
                         sx={{ width: '100%' }}
                         size="small"
-                        label="Number"
-                        defaultValue="1000"
+                        label="Number of devices"
+                        defaultValue={numberOfDevicesWithPerDevice}
                         variant="outlined"
+                        type='number'
+                        onBlur={(event) => setNumberOfDevicesWithPerDevice(event.target.value)}
                       />
                     </Grid>
                   </Grid>
@@ -112,9 +123,11 @@ function RadioSliceTab() {
                       <StyledTextField disabled={selectedRadio !== 'per_device'}
                         sx={{ width: '100%' }}
                         size="small"
-                        label="Gbps"
-                        defaultValue="300"
+                        label="Mbps"
+                        defaultValue={bandwidthWithPerDevice}
                         variant="outlined"
+                        type='number'
+                        onBlur={(event) => setBandwidthWithPerDevice(event.target.value)}
                       />
                     </Grid>
                   </Grid>
@@ -123,7 +136,7 @@ function RadioSliceTab() {
             </BoxInsideRadio>
             <FormControlLabel value="density" control={<Radio style={{ color: 'black' }} />} label={<Typography sx={{ fontWeight: 'bold' }}>Density</Typography>} />
             <BoxInsideRadio>
-              <Typography>I want a guaranteed connection of a large number of my devices with minimal traffic.</Typography>
+              <Typography>I want to connect large number of devices with minimal traffic and interactions (MIIoT etc).</Typography>
               <Box sx={selectedRadio !== 'density' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
                 <Box>
                   <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
@@ -135,9 +148,11 @@ function RadioSliceTab() {
                       <StyledTextField disabled={selectedRadio !== 'density'}
                         sx={{ width: '100%' }}
                         size="small"
-                        label="Number"
-                        defaultValue="100500"
+                        label="Number of devices"
+                        defaultValue={numberOfDevicesWithDensity}
                         variant="outlined"
+                        type='number'
+                        onBlur={(event) => setNumberOfDevicesWithDensity(event.target.value)}
                       />
                     </Grid>
                   </Grid>
@@ -155,9 +170,14 @@ function RadioSliceTab() {
                         select
                         label="Select"
                         defaultValue="best_effort"
+                        value={bandwidthWithDensity}
+                        onChange={(event) => setBandwidthWithDensity(event.target.value)}
                       >
                         <MenuItem key='best_effort' value='best_effort'>best effort</MenuItem>
+                        <MenuItem key='50Mbps' value='50Mbps'>50Mbps</MenuItem>
                         <MenuItem key='100Mbps' value='100Mbps'>100Mbps</MenuItem>
+                        <MenuItem key='500Mbps' value='500Mbps'>500Mbps</MenuItem>
+                        <MenuItem key='1Gbps' value='1Gbps'>1Gbps</MenuItem>
                       </StyledTextField>
                     </Grid>
                   </Grid>

@@ -18,6 +18,7 @@ function CoreSliceTab() {
   const { selectedTrafficWithLocal, setSelectedTrafficWithLocal } = useContext(MyContext)
   const { selectedFallbackWithLocal, setSelectedFallbackWithLocal } = useContext(MyContext)
   const { selectedFallbackWithTransfer, setSelectedFallbackWithTransfer } = useContext(MyContext)
+  const { selectedDataCenterWithLocal, setSelectedDataCenterWithLocal } = useContext(MyContext)
 
   const theme = useTheme();
   const isLg = useMediaQuery(theme.breakpoints.up('lg'));
@@ -118,8 +119,8 @@ function CoreSliceTab() {
                 <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
                   <Grid item xs={12} lg={2} />
                   <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
-                    <Typography>Fallback scenario.</Typography>
-                    <Typography>If my VPN fails,</Typography>
+                    <Typography>Fallback scenario,</Typography>
+                    <Typography>if my VPN fails,</Typography>
                     <Typography>route data plane</Typography>
                   </Grid>
                   <Grid item xs={12} lg={6}>
@@ -300,11 +301,12 @@ function CoreSliceTab() {
                       size="small"
                       select
                       label="Select"
-                      defaultValue="nearest"
+                      value={selectedDataCenterWithLocal}
+                      onChange={(event) => setSelectedDataCenterWithLocal(event.target.value)}
                     >
-                      <MenuItem key='nearest' value='nearest'>Nearest</MenuItem>
-                      <MenuItem key='1' value='1'>Војводе Пријезде 20, Београд, Serbia</MenuItem>
-                      <MenuItem key='2' value='2'>Јанка Чмелика 105, Нови Сад, Serbia</MenuItem>
+                      <MenuItem value='nearest'>Nearest</MenuItem>
+                      <MenuItem value='Војводе Пријезде 20, Београд, Serbia'>Војводе Пријезде 20, Београд, Serbia</MenuItem>
+                      <MenuItem value='Јанка Чмелика 105, Нови Сад, Serbia'>Јанка Чмелика 105, Нови Сад, Serbia</MenuItem>
                     </StyledTextField>
                   </Grid>
                 </Grid>
@@ -339,8 +341,8 @@ function CoreSliceTab() {
                 <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
                   <Grid item xs={12} lg={2} />
                   <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
-                    <Typography>Fallback scenario.</Typography>
-                    <Typography>If my VPN fails,</Typography>
+                    <Typography>Fallback scenario,</Typography>
+                    <Typography>if my VPN fails,</Typography>
                     <Typography>route data plane</Typography>
                   </Grid>
                   <Grid item xs={12} lg={6}>
@@ -404,8 +406,8 @@ function CoreSliceTab() {
                 <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
                   <Grid item xs={12} lg={2} />
                   <Grid item xs={12} lg={4} sx={{ mt: 1 }}>
-                    <Typography>Fallback scenario.</Typography>
-                    <Typography>If my local core fails, route</Typography>
+                    <Typography>Fallback scenario,</Typography>
+                    <Typography>if my local core fails</Typography>
                   </Grid>
                   <Grid item xs={12} lg={6}>
                     <RadioGroup
@@ -416,7 +418,7 @@ function CoreSliceTab() {
                       <FormControlLabel disabled={!isFallbackWithTransferActive()} value="null" control={
                         <Radio style={isFallbackWithTransferActive() ? { color: 'black' } : {}} />
                       } label={
-                        <Typography>to null (do nothing, drop traffic to null)</Typography>
+                        <Typography>Route my traffic to null (do nothing, drop traffic to null)</Typography>
                       } />
                       <FormControlLabel disabled={!isFallbackWithTransferActive()} value="public" control={
                         <Radio style={isFallbackWithTransferActive() ? { color: 'black' } : {}} />

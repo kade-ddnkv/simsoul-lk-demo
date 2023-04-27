@@ -10,8 +10,8 @@ const containerStyle = {
 };
 
 const center = {
-  lat: 54.024003,
-  lng: -3.901981
+  lat: 44.802165,
+  lng: 20.468065,
 };
 
 const libraries = ["drawing"]
@@ -73,14 +73,14 @@ function handleCountrySelection(country) {
     return
   }
 
-  mapRef.setCenter(countryInfo[country].center)
-  mapRef.setZoom(countryInfo[country].zoom)
-
   countryLayer.style = (options: { feature: { placeId: string; }; }) => {
     if (options.feature.placeId == countryInfo[country].placeId) {
       return featureStyleOptions;
     }
   };
+  
+  mapRef.setCenter(countryInfo[country].center)
+  mapRef.setZoom(countryInfo[country].zoom)
 }
 
 function resetContrySelection() {
@@ -163,7 +163,7 @@ const RenderMap = () => {
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={6}
+        zoom={7}
         options={mapControlOptions}
         onLoad={onMapLoad}
       >

@@ -32,7 +32,7 @@ export default function LeaveFeedback() {
   return (
     <>
       <Container maxWidth='xl' sx={{ mt: 2 }}>
-        <Header mainText='simsoul demo' noLine useHomeButton={true} isBold={false} />
+        <Header mainText='simsoul 5G slicing demo' noLine useHomeButton={true} isBold={false} />
       </Container>
       <Container maxWidth='lg' sx={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
         <Stack component={Container} spacing={2} sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
