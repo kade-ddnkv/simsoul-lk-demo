@@ -4,7 +4,7 @@ import { Radio, RadioGroup, MenuItem, FormControlLabel, Checkbox } from '@mui/ma
 import { MyContext } from '@/context/myContext';
 import { HeaderText, StyledTextField } from '@/components/generalComponents';
 
-function GeneralTab() {
+function GeneralTab({ explanation }) {
   const { sliceName, setSliceName } = useContext(MyContext)
 
   return (
@@ -28,6 +28,7 @@ function GeneralTab() {
             size="small"
             label="Slice name"
             variant="outlined"
+            defaultValue={sliceName}
             onBlur={(event) => {
               setSliceName(event.target.value)
             }}
@@ -48,16 +49,18 @@ function GeneralTab() {
             }}
           />
         </Grid>
-        <Grid item xs={12} lg={5} />
-        <Grid item xs={12} sx={{mt: 3}}>
-          <Typography>In the following steps, you will need to select:</Typography>
-          <Typography sx={{mt: 1}} />
-          <Typography>- radio slice type</Typography>
-          <Typography>- core slice type</Typography>
-          <Typography>- location of the slice</Typography>
-          <Typography>- time of work</Typography>
-          <Typography>- billing</Typography>
-        </Grid>
+        {explanation &&
+          <Grid item xs={12} lg={5} />}
+        {explanation &&
+          <Grid item xs={12} sx={{ mt: 3 }}>
+            <Typography>In the following steps, you will need to select:</Typography>
+            <Typography sx={{ mt: 1 }} />
+            <Typography>- radio slice type</Typography>
+            <Typography>- core slice type</Typography>
+            <Typography>- location of the slice</Typography>
+            <Typography>- time of work</Typography>
+            <Typography>- billing</Typography>
+          </Grid>}
       </Grid>
     </Box>
   )

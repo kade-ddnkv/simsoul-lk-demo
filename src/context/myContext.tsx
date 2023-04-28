@@ -10,8 +10,8 @@ export const MyContextProvider = ({ children }) => {
   const [numberOfDevicesWithPerSlice, setNumberOfDevicesWithPerSlice] = useState('1250');
   const [bandwidthWithPerDevice, setBandwidthWithPerDevice] = useState('1000');
   const [numberOfDevicesWithPerDevice, setNumberOfDevicesWithPerDevice] = useState('300');
-  const [bandwidthWithDensity, setBandwidthWithDensity] = useState('100500');
-  const [numberOfDevicesWithDensity, setNumberOfDevicesWithDensity] = useState('!!default_value!!');
+  const [bandwidthWithDensity, setBandwidthWithDensity] = useState('best_effort');
+  const [numberOfDevicesWithDensity, setNumberOfDevicesWithDensity] = useState('100500');
   
   const [selectedCore, setSelectedCore] = useState('nothing');
   

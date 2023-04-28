@@ -14,6 +14,10 @@ import 'firebase/compat/database'
 import { useAuth } from '@/auth/authUserContext';
 import AddIcon from '@mui/icons-material/Add';
 
+import dayjs from 'dayjs';
+var isSameOrAfter = require('dayjs/plugin/isSameOrAfter')
+dayjs.extend(isSameOrAfter)
+
 // import { Inter } from 'next/font/google'
 // const inter = Inter({ subsets: ['latin'] })
 
@@ -69,6 +73,30 @@ const IndexPage = () => {
     }
   }, [user])
 
+  const sliceType = (slice) => {
+    if (slice.radio.type != 'nothing' && slice.core.type != 'nothing') {
+      return 'radio + core'
+    } else if (slice.radio.type == 'nothing' && slice.core.type != 'nothing') {
+      return 'core'
+    } else if (slice.radio.type != 'nothing') {
+      return 'radio'
+    } else {
+      return 'nothing???'
+    }
+  }
+
+  const sliceRunning = (slice) => {
+    let afterStartDate = dayjs().isSameOrAfter(dayjs(slice.startDate), 'day')
+    let beforeEndDate = dayjs().isBefore(dayjs(slice.endDate), 'day')
+    if (!afterStartDate) {
+      return 'not started yet'
+    } else if (afterStartDate && beforeEndDate) {
+      return 'running'
+    } else {
+      return 'finished working'
+    }
+  }
+
   return (
     <>
       <Head>
@@ -98,9 +126,9 @@ const IndexPage = () => {
                       {slice.name}
                     </Link>
                   </TableCell>
-                  <TableCell align="right">{slice.running}</TableCell>
-                  <TableCell align="right">{slice.type}</TableCell>
-                  <TableCell align="right">{slice.geography}</TableCell>
+                  <TableCell align="right">{sliceRunning(slice)}</TableCell>
+                  <TableCell align="right">{sliceType(slice)}</TableCell>
+                  <TableCell align="right">{slice.geography.type}</TableCell>
                   <TableCell align="right">{slice.started}</TableCell>
                 </TableRow>
               ))}

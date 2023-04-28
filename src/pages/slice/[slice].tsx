@@ -14,6 +14,7 @@ import { useUser } from '@/auth/useUser';
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/database'
 import { useAuth } from '@/auth/authUserContext';
+import dayjs from 'dayjs';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return serverSideAuthCheck(context)
@@ -27,8 +28,19 @@ export default function SlicePage() {
   const [changesHappened, setChangesHappened] = useState(false)
 
   const { setSliceName } = useContext(MyContext)
-  const { setSelectedRadio } = useContext(MyContext)
-  const { setSelectedCore } = useContext(MyContext)
+  const { setSelectedRadio,
+    setBandwidthWithPerSlice, setNumberOfDevicesWithPerSlice,
+    setBandwidthWithPerDevice, setNumberOfDevicesWithPerDevice,
+    setBandwidthWithDensity, setNumberOfDevicesWithDensity } = useContext(MyContext)
+  const { setSelectedCore,
+    setSelectedTrafficWithOperator, setSelectedFallbackWithOperator,
+    setSelectedDataCenterWithLocal, setSelectedTrafficWithLocal, setSelectedFallbackWithLocal,
+    setSelectedTransferCore, setSelectedFallbackWithTransfer } = useContext(MyContext)
+  const { setGeographyType } = useContext(MyContext)
+  const { setStartDate, setCheckedEndDate, setEndDate } = useContext(MyContext)
+  const { setSelectedBilling } = useContext(MyContext)
+
+  const [allDataLoaded, setAllDataLoaded] = useState(false)
 
   function setContext() {
     if (!changesHappened) {
@@ -36,10 +48,53 @@ export default function SlicePage() {
         var slicesFullRef = firebase.database().ref('slices_preview/' + user?.id + '/' + slice);
         slicesFullRef.on('value', (snapshot) => {
           const data = snapshot.val()
+          console.log(data)
           if (data) {
             setSliceName(data.name)
-            setSelectedRadio(data.radio)
-            setSelectedCore(data.core)
+            setSelectedRadio(data.radio.type)
+            switch (data.radio.type) {
+              case 'per_slice':
+                setBandwidthWithPerSlice(data.radio.bandwidth)
+                setNumberOfDevicesWithPerSlice(data.radio.numberOfDevices)
+                break
+              case 'per_device':
+                setBandwidthWithPerDevice(data.radio.bandwidth)
+                setNumberOfDevicesWithPerDevice(data.radio.numberOfDevices)
+                break
+              case 'density':
+                setBandwidthWithDensity(data.radio.bandwidth)
+                setNumberOfDevicesWithDensity(data.radio.numberOfDevices)
+                break
+            }
+            setSelectedCore(data.core.type)
+            switch (data.core.type) {
+              case 'operator':
+                setSelectedTrafficWithOperator(data.core.traffic)
+                if (data.core.traffic === 'VPN') {
+                  setSelectedFallbackWithOperator(data.core.fallback)
+                }
+                break
+              case 'local':
+                setSelectedDataCenterWithLocal(data.core.dataCenter)
+                setSelectedTrafficWithLocal(data.core.traffic)
+                if (data.core.traffic === 'VPN') {
+                  setSelectedFallbackWithLocal(data.core.fallback)
+                }
+                break
+              case 'transfer':
+                setSelectedTransferCore(data.core.transferCore)
+                setSelectedFallbackWithTransfer(data.core.fallback)
+                break
+            }
+            setGeographyType(data.geography.type)
+            setStartDate(dayjs(data.time.startDate))
+            if (data.time.endDate != '') {
+              setCheckedEndDate(true)
+              setEndDate(dayjs(data.time.endDate))
+            }
+            setSelectedBilling(data.billing)
+
+            setAllDataLoaded(true)
           }
         });
         return () => {
@@ -61,7 +116,7 @@ export default function SlicePage() {
       <Container maxWidth='xl' sx={{ mt: 2 }}>
         <Header mainText={(slice ? slice : '') + ' / Settings'} useHomeButton={true} isBold={true} />
         <Box sx={{ mt: 4 }}>
-          {user
+          {allDataLoaded
             ? <TabsSettings />
             : <Typography>Loading...</Typography>
           }

@@ -4,9 +4,9 @@ import { Grid, Typography, Box } from '@mui/material'
 import { HeaderText } from '@/components/generalComponents'
 
 function SummaryTab() {
-  const { selectedRadio, 
-    bandwidthWithPerSlice, numberOfDevicesWithPerSlice, 
-    bandwidthWithPerDevice, numberOfDevicesWithPerDevice, 
+  const { selectedRadio,
+    bandwidthWithPerSlice, numberOfDevicesWithPerSlice,
+    bandwidthWithPerDevice, numberOfDevicesWithPerDevice,
     bandwidthWithDensity, numberOfDevicesWithDensity } = useContext(MyContext)
   const { selectedCore,
     selectedTrafficWithOperator, selectedFallbackWithOperator,
@@ -149,7 +149,11 @@ function SummaryTab() {
           <Typography sx={{ fontWeight: 'bold' }}>Dates of work: </Typography>
         </Grid>
         <Grid item xs={12} lg={10.5}>
-          <Typography component='span'>From {startDate ? startDate.format('DD/MM/YYYY') : <NotSelected />} {checkedEndDate ? ' to ' : ' until stopped'} {checkedEndDate && !endDate && <NotSelected />}</Typography>
+          <Typography component='span'>
+            From {startDate ? startDate.format('DD/MM/YYYY') : <NotSelected />} {checkedEndDate ? ' until ' : ' until stopped'}
+            {(checkedEndDate && endDate) && endDate.format('DD/MM/YYYY')}
+            {(checkedEndDate && !endDate) && <NotSelected />}
+          </Typography>
         </Grid>
         <Grid item xs={12} sx={{ mt: 1 }} />
         <Grid item xs={12} lg={1.5}>

@@ -21,6 +21,7 @@ import { useUser } from '@/auth/useUser';
 import { MyContext } from '@/context/myContext';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
+import GeneralTab from './GeneralTab';
 
 const StyledTab = styled(Tab)({
   ml: 4,
@@ -129,37 +130,39 @@ export default function TabsSettings() {
           onChange={handleTabChange}
           sx={{ borderRight: 0, borderColor: 'divider', display: 'flex', overflow: 'visible' }}
         >
-          <StyledTab disabled sx={{}} label="Settings" value='0' />
-          <StyledTab label="Radio slice" value='1' />
-          <StyledTab label="Core slice" value='2' />
-          <StyledTab label="Geography" value='3' />
-          <StyledTab label="Time and billing" value='4' />
-          <StyledTab label="Configuration" value='5' />
+          <StyledTab disabled sx={{}} label="Settings" />
+          <StyledTab label="General" value='1' />
+          <StyledTab label="Radio slice" value='2' />
+          <StyledTab label="Core slice" value='3' />
+          <StyledTab label="Geography" value='4' />
+          <StyledTab label="Time and billing" value='5' />
+          <StyledTab label="Configuration" value='6' />
           <ResetButton />
           <SaveButton />
-          <StyledTab disabled sx={{ mt: 4 }} label="Analytics" value='6' />
+          <StyledTab disabled sx={{ mt: 4 }} label="Analytics" />
           <StyledTab label="Analytics 1" value='7' />
           <StyledTab label="Analytics 2" value='8' />
           <StyledTab label="Analytics 3" value='9' />
         </TabList>
         <Box sx={{ flexGrow: 1 }}>
-          <TabPanel value='0' />
           <TabPanel value='1'>
+            <GeneralTab explanation={false} />
+            </TabPanel>
+          <TabPanel value='2'>
             <RadioSliceTab />
           </TabPanel>
-          <TabPanel value='2'>
+          <TabPanel value='3'>
             <CoreSliceTab />
           </TabPanel>
-          <TabPanel value='3'>
+          <TabPanel value='4'>
             <GeographyTab />
           </TabPanel>
-          <TabPanel value='4'>
+          <TabPanel value='5'>
             <TimeAndBillingTab />
           </TabPanel>
-          <TabPanel value='5'>
+          <TabPanel value='6'>
             <ConfigurationTab />
           </TabPanel>
-          <TabPanel value='6' />
           <TabPanel value='7'>
             Analytics 1
           </TabPanel>

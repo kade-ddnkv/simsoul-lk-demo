@@ -42,9 +42,9 @@ function ConfigurationTab() {
         <Grid item xs={12}>
           <HeaderText>Configuration</HeaderText>
         </Grid>
-        <Grid item xs={12} sx={{ mt: 4 }} />
-        <Grid item xs={12}>
-          <HeaderText>Select the IMSI list</HeaderText>
+        {/* <Grid item xs={12} sx={{ mt: 4 }} /> */}
+        <Grid item xs={12} sx={{ mb: 2 }}>
+          <Typography>Configure the list of the devices to use in your slice (IMSI-based list)</Typography>
         </Grid>
         <Grid item xs={12} lg={2} />
         <Grid item xs={12} lg={7}>
@@ -56,12 +56,12 @@ function ConfigurationTab() {
             <FormControlLabel value="operator" control={
               <Radio style={{ color: 'black' }} />
             } label={
-              <Typography sx={{ fontWeight: 'bold' }}>Upload from telecom account</Typography>
+              <Typography sx={{ fontWeight: 'bold' }}>Upload from your mobile network operator account</Typography>
             } />
             <BoxInsideRadio>
-              <Typography>Link an account in the operator's personal account to link all registered IMSI.</Typography>
+              <Typography>Link an account in the operator's personal account to register devices (IMSI) for the slice.</Typography>
               <Box sx={selectedImsi !== 'operator' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 1, display: 'flex', alignItems: 'center' }}>
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 0.5 }}>
                   <Grid item xs={12} lg={2} />
                   <Grid item xs={12} lg={10}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -79,7 +79,7 @@ function ConfigurationTab() {
             } />
             <BoxInsideRadio>
               <Box sx={selectedImsi !== 'manual' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 1, display: 'flex', alignItems: 'center' }}>
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 0.5 }}>
                   <Grid item xs={12} lg={2} />
                   <Grid item xs={12} lg={10}>
                     <StyledTextField disabled={selectedImsi !== 'manual'}
@@ -101,7 +101,7 @@ function ConfigurationTab() {
             } />
             <BoxInsideRadio>
               <Box sx={selectedImsi !== 'CSV' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 1, display: 'flex', alignItems: 'center' }}>
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 0.5 }}>
                   <Grid item xs={12} lg={2} />
                   <Grid item xs={12} lg={10}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -123,10 +123,17 @@ function ConfigurationTab() {
           <Grid item xs={12}>
             <HeaderText>Radio slice configuration</HeaderText>
           </Grid>
+          <Grid item xs={12} sx={{mb: 2}}>
+            <Typography>Send a command to the devices about switching to radio slice.</Typography>
+          </Grid>
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
-            <Typography sx={{ mt: 2 }}>Send a command to the devices about switching to slice radio.</Typography>
-            <BoxInsideRadio></BoxInsideRadio>
+            <BoxInsideRadio>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <StyledButton variant='outlined' disabled={selectedRadio === 'nothing'}>Send</StyledButton>
+                <Typography sx={{ ml: 3 }}>Last command send on 2023.04.15 17:01:15</Typography>
+              </Box>
+            </BoxInsideRadio>
           </Grid>
         </Grid>
       </Box>

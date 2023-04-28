@@ -77,20 +77,88 @@ function SubmitButton() {
   const { user } = useAuth()
 
   const { sliceName } = useContext(MyContext)
-  const { selectedRadio } = useContext(MyContext)
-  const { selectedCore } = useContext(MyContext)
+  const { selectedRadio,
+    bandwidthWithPerSlice, numberOfDevicesWithPerSlice,
+    bandwidthWithPerDevice, numberOfDevicesWithPerDevice,
+    bandwidthWithDensity, numberOfDevicesWithDensity } = useContext(MyContext)
+  const { selectedCore,
+    selectedTrafficWithOperator, selectedFallbackWithOperator,
+    selectedDataCenterWithLocal, selectedTrafficWithLocal, selectedFallbackWithLocal,
+    selectedTransferCore, selectedFallbackWithTransfer } = useContext(MyContext)
+  const { geographyType } = useContext(MyContext)
+  const { startDate, checkedEndDate, endDate } = useContext(MyContext)
+  const { selectedBilling } = useContext(MyContext)
 
   const router = useRouter()
 
   function storeNewSlice() {
-    firebase.database().ref('slices_preview/' + user?.id + '/' + sliceName).set({
-      name: sliceName,
-      radio: selectedRadio,
-      core: selectedCore,
-    }).then(success => {
-    }).catch((error) => {
-      console.error(error);
-    })
+    let slice = {}
+    slice.name = sliceName
+    let numberOfDevices = 0
+    let bandwidth = 0
+    switch (selectedRadio) {
+      case 'per_slice':
+        bandwidth = bandwidthWithPerSlice
+        numberOfDevices = numberOfDevicesWithPerSlice
+        break
+      case 'per_device':
+        bandwidth = bandwidthWithPerDevice
+        numberOfDevices = numberOfDevicesWithPerDevice
+        break
+      case 'density':
+        bandwidth = bandwidthWithDensity
+        numberOfDevices = numberOfDevicesWithDensity
+        break
+    }
+    slice.radio = {
+      type: selectedRadio,
+      bandwidth: bandwidth,
+      numberOfDevices: numberOfDevices,
+    }
+    let dataCenter = ''
+    let traffic = ''
+    let fallback = ''
+    let transferCore = ''
+    switch (selectedCore) {
+      case 'operator':
+        traffic = selectedTrafficWithOperator
+        if (traffic === 'VPN') {
+          fallback = selectedFallbackWithOperator
+        }
+        break
+      case 'local':
+        dataCenter = selectedDataCenterWithLocal
+        traffic = selectedTrafficWithLocal
+        if (traffic === 'VPN') {
+          fallback = selectedFallbackWithLocal
+        }
+        break
+      case 'transfer':
+        transferCore = selectedTransferCore
+        fallback = selectedFallbackWithTransfer
+        break
+    }
+    slice.core = {
+      type: selectedCore,
+      dataCenter: dataCenter,
+      traffic: traffic,
+      fallback: fallback,
+    }
+    slice.geography = {
+      type: geographyType
+    }
+    slice.time = {
+      startDate: startDate.toISOString(),
+      endDate: checkedEndDate ? endDate.toISOString() : '',
+    }
+    slice.billing = selectedBilling
+
+    firebase.database().ref('slices_preview/' + user?.id + '/' + sliceName).set(slice)
+      .then(success => {
+      })
+      .catch((error) => {
+        console.error(error);
+      })
   }
 
   return (
@@ -192,7 +260,7 @@ export default function TabsCreate() {
           <TabPanel value='1'>
             {viewportHeight &&
               <Box sx={{ minHeight: viewportHeight, display: 'flex', flexDirection: 'column' }}>
-                <GeneralTab />
+                <GeneralTab explanation={true} />
                 <ButtonsAtBottom />
               </Box>
             }
