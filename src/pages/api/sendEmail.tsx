@@ -15,8 +15,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const mailOptions = {
       from: process.env.EMAIL_ADDRESS,
-      to: process.env.EMAIL_ADDRESS,
-      subject,
+      to: process.env.EMAIL_RECEIVER_ADDRESS,
+      subject: subject,
       text: message
     };
 

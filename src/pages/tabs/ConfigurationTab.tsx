@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { Button, Grid, TextField, Tabs, Tab, Box, Typography, Divider, styled } from '@mui/material';
-import { Radio, RadioGroup, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
+import { Button, Stack, Grid, TextField, Tabs, Tab, Box, Typography, Divider, styled } from '@mui/material';
+import { Radio, RadioGroup, MenuItem, FormControlLabel, Checkbox, InputAdornment } from '@mui/material';
 import CheckBoxOutlineBlankSharpIcon from '@mui/icons-material/CheckBoxOutlineBlankSharp';
 import CheckBoxSharpIcon from '@mui/icons-material/CheckBoxSharp';
 import { useMediaQuery, useTheme } from '@mui/material';
@@ -11,10 +11,12 @@ import { HeaderText, StyledButton, StyledTextField, BoxInsideRadio } from '@/com
 import { MyContext } from '@/context/myContext';
 
 function ConfigurationTab() {
-  const { selectedCore, setSelectedCore } = useContext(MyContext)
-  const { selectedRadio, setSelectedRadio } = useContext(MyContext)
-  const { selectedTrafficWithOperator, setSelectedTrafficWithOperator } = useContext(MyContext)
-  const { selectedTrafficWithLocal, setSelectedTrafficWithLocal } = useContext(MyContext)
+  const { selectedCore } = useContext(MyContext)
+  const { selectedRadio } = useContext(MyContext)
+  const { selectedTrafficWithOperator, selectedTrafficWithLocal } = useContext(MyContext)
+  const { selectedFallbackWithOperator, selectedFallbackWithLocal } = useContext(MyContext)
+  const { selectedFallbackWithTransfer } = useContext(MyContext)
+  const { selectedTransferCore } = useContext(MyContext)
 
   const { selectedImsi, setSelectedImsi } = useContext(MyContext)
 
@@ -23,8 +25,31 @@ function ConfigurationTab() {
       || (selectedCore === 'local' && selectedTrafficWithLocal === 'VPN')
   }
 
+  function isPrimaryVpnActive() {
+    return isCoreWithVpnActive() || isTransferCoreActive()
+  }
+
+  function isSecondaryVpnActive() {
+    return (selectedCore === 'operator' && selectedTrafficWithOperator === 'VPN' && selectedFallbackWithOperator === 'VPN')
+      || (selectedCore === 'local' && selectedTrafficWithLocal === 'VPN' && selectedFallbackWithLocal === 'VPN')
+      || (isTransferCoreActive() && selectedFallbackWithTransfer === 'VPN')
+  }
+
   function isTransferCoreActive() {
     return selectedCore === 'transfer';
+  }
+
+  function isCoreFallbackVpnActive() {
+    return (selectedCore === 'operator' && selectedTrafficWithOperator === 'VPN' && selectedFallbackWithOperator !== 'null')
+      || (selectedCore === 'local' && selectedTrafficWithLocal === 'VPN' && selectedFallbackWithLocal !== 'null')
+  }
+
+  function isActivateCoreSliceMsActive() {
+    return isTransferCoreActive() && selectedFallbackWithTransfer !== 'null'
+  }
+
+  function isRerouteTrafficMsActive() {
+    return (isTransferCoreActive() && selectedFallbackWithTransfer !== 'null') || isCoreFallbackVpnActive()
   }
 
   const handleImsiChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,16 +65,14 @@ function ConfigurationTab() {
     >
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item xs={12}>
-          <HeaderText>Configuration</HeaderText>
+          <HeaderText>Device selection</HeaderText>
         </Grid>
-        {/* <Grid item xs={12} sx={{ mt: 4 }} /> */}
         <Grid item xs={12} sx={{ mb: 2 }}>
           <Typography>Configure the list of the devices to use in your slice (IMSI-based list)</Typography>
         </Grid>
         <Grid item xs={12} lg={2} />
         <Grid item xs={12} lg={7}>
           <RadioGroup
-            name="fallback-operator-radio-buttons-group"
             value={selectedImsi}
             onChange={handleImsiChange}
           >
@@ -118,51 +141,81 @@ function ConfigurationTab() {
           </RadioGroup>
         </Grid>
       </Grid>
-      <Box sx={selectedRadio === 'nothing' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+      <Box>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
-            <HeaderText>Radio slice configuration</HeaderText>
+            <HeaderText>Device attachment to the slice</HeaderText>
           </Grid>
-          <Grid item xs={12} sx={{mb: 2}}>
-            <Typography>Send a command to the devices about switching to radio slice.</Typography>
+          <Grid item xs={12} sx={{ mb: 2 }}>
+            <Typography>Click the button to send a command to attach devices to the slice.</Typography>
           </Grid>
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
-            <BoxInsideRadio>
+            <BoxInsideRadio sx={{ ml: 0 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <StyledButton variant='outlined' disabled={selectedRadio === 'nothing'}>Send</StyledButton>
+                <StyledButton variant='outlined'>Send</StyledButton>
                 <Typography sx={{ ml: 3 }}>Last command send on 2023.04.15 17:01:15</Typography>
               </Box>
             </BoxInsideRadio>
           </Grid>
         </Grid>
       </Box>
-      <Box sx={!isCoreWithVpnActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+      <Box sx={{ mt: 1 }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={12} sx={{ mt: 4 }}>
-            <HeaderText>Core slice with VPN configuration</HeaderText>
+          <Grid item xs={12}>
+            <HeaderText sx={{ fontSize: '1.3rem' }}>Radio slice configuration</HeaderText>
+          </Grid>
+          <Grid item xs={12} lg={9} sx={{ mb: 2 }}>
+            <Typography>There is no separate configuration for the radio slice except options you selected on the radio slice page.</Typography>
+            <Typography>Please note that if you want to route traffic of your mobile devices to your local facility, you need to activate core slice in addition to your radio slice.</Typography>
+            <Typography sx={{ mt: 2 }}>You can access the list of the 5G base stations that is configured for security or some other reason.</Typography>
+          </Grid>
+          <Grid item xs={12} lg={3} />
+          <Grid item xs={12} lg={2} />
+          <Grid item xs={12} lg={7}>
+            <BoxInsideRadio sx={{ ml: 0 }}>
+              <Stack direction='row' spacing={2}>
+                <StyledButton variant='outlined'>Download</StyledButton>
+                <StyledButton variant='outlined'>Access via API</StyledButton>
+              </Stack>
+            </BoxInsideRadio>
+          </Grid>
+        </Grid>
+      </Box>
+      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid item xs={12} sx={{ mt: 2, mb: 4 }}>
+          <HeaderText sx={{ fontSize: '1.3rem' }}>Core slice configuration</HeaderText>
+        </Grid>
+      </Grid>
+      <Box sx={!isPrimaryVpnActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={12}>
+            <HeaderText>Primary VPN configuration</HeaderText>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography>This VPN will be used to exchange traffic between 5G devices and your local resources.</Typography>
           </Grid>
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
             <Box sx={{ mt: 2 }}>
               <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ display: 'flex', alignItems: 'center' }}>
                 <Grid item xs={12} lg={4}>
-                  <Typography>Specify the IP address of the VPN endpoint</Typography>
+                  <Typography>Customer VPN endpoint IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
-                  <StyledTextField disabled={!isCoreWithVpnActive()}
+                  <StyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
-                    defaultValue="0.0.0.0"
+                    defaultValue=""
                     variant="outlined"
                   />
                 </Grid>
                 <Grid item xs={12} lg={4}>
-                  <Typography>Specify the VPN public key</Typography>
+                  <Typography>Customer VPN public key</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
-                  <StyledTextField disabled={!isCoreWithVpnActive()}
+                  <StyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="VPN public key"
@@ -170,133 +223,127 @@ function ConfigurationTab() {
                     variant="outlined"
                   />
                 </Grid>
-              </Grid>
-              <Box sx={'selectedFallback' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
-                <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: '2px', display: 'flex', alignItems: 'center' }}>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography>Specify the IP address of the backup VPN endpoint</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={'selectedFallback'}
-                      sx={{ width: '100%' }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography>Specify the public key of the backup VPN</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={'selectedFallback'}
-                      sx={{ width: '100%' }}
-                      size="small"
-                      label="VPN public key"
-                      defaultValue=""
-                      variant="outlined"
-                    />
-                  </Grid>
-                </Grid>
-              </Box>
-              <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: '2px', display: 'flex', alignItems: 'center' }}>
                 <Grid item xs={12} lg={4}>
-                  <Typography>IP address of the subscriber devices subnet</Typography>
+                  <Typography>Operator VPN endpoint IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
-                  <StyledTextField disabled={!isCoreWithVpnActive()}
+                  <StyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
-                    defaultValue="0.0.0.0"
+                    defaultValue="12.34.56.78"
                     variant="outlined"
+                    InputProps={{ readOnly: true, }}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={4}>
+                  <Typography>Operator VPN public key</Typography>
+                </Grid>
+                <Grid item xs={12} lg={8}>
+                  <StyledTextField disabled={!isPrimaryVpnActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="VPN public key"
+                    defaultValue="mjD_ObsTlRU8L-qnD4OeCmyliHIB3MHg="
+                    variant="outlined"
+                    InputProps={{ readOnly: true, }}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={4}>
+                  <Typography>Preassigned IP subnets for 5G devices</Typography>
+                </Grid>
+                <Grid item xs={12} lg={8}>
+                  <StyledTextField disabled={!isPrimaryVpnActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="IP subnet"
+                    defaultValue="10.0.0.0/8"
+                    variant="outlined"
+                    InputProps={{ readOnly: true, }}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={4}>
+                  <Typography>Preassigned IP subnet for sliced 5G core functions</Typography>
+                </Grid>
+                <Grid item xs={12} lg={8}>
+                  <StyledTextField disabled={!isPrimaryVpnActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="IP subnet"
+                    defaultValue="172.17.17.0/24"
+                    variant="outlined"
+                    InputProps={{ readOnly: true, }}
                   />
                 </Grid>
               </Grid>
-              <Box sx={{ mt: 2 }}>
-                <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: '2px', display: 'flex', alignItems: 'center' }}>
-                  <Grid item xs={12}>
-                    <Typography sx={{ fontWeight: 'bold' }}>For copying:</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography>IP address of the operator's VPN endpoint</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={!isCoreWithVpnActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography>Public key of the operator's VPN endpoint</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={!isCoreWithVpnActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="Public key"
-                      defaultValue="some public key"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography component={'span'}>IP address of the gateway on the <Typography sx={{ textDecoration: 'underline' }} display="inline">subscriber's</Typography> side</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={!isCoreWithVpnActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography component={'span'}>IP address of the gateway on the <Typography sx={{ textDecoration: 'underline' }} display="inline">operator's</Typography> side</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={!isCoreWithVpnActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
+            </Box>
+          </Grid>
+        </Grid>
+        <BoxInsideRadio />
+      </Box>
+      <Box sx={!isSecondaryVpnActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={12} sx={{ mt: 2 }}>
+            <HeaderText>Secondary VPN configuration</HeaderText>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography>This VPN will be used to exchange traffic between 5G devices and your local resources.</Typography>
+          </Grid>
+          <Grid item xs={12} lg={2} />
+          <Grid item xs={12} lg={7}>
+            <Box sx={{ mt: 2 }}>
+              <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ display: 'flex', alignItems: 'center' }}>
+                <Grid item xs={12} lg={4}>
+                  <Typography>Customer VPN endpoint IP address</Typography>
                 </Grid>
-                <Box sx={{ mt: 3 }}>
-                  <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: '2px', display: 'flex', alignItems: 'center' }}>
-                    <Grid item xs={12} lg={4}>
-                      <Typography>The location of the outer core</Typography>
-                    </Grid>
-                    <Grid item xs={12} lg={8}>
-                      <StyledTextField disabled={!isCoreWithVpnActive()}
-                        sx={{ width: '100%' }}
-                        size="small"
-                        select
-                        label="Select"
-                        defaultValue="1"
-                      >
-                        <MenuItem key='nearest' value='nearest'>Nearest</MenuItem>
-                        <MenuItem key='1' value='1'>221B Baker Street, London</MenuItem>
-                      </StyledTextField>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </Box>
+                <Grid item xs={12} lg={8}>
+                  <StyledTextField disabled={!isSecondaryVpnActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="IP address"
+                    defaultValue=""
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} lg={4}>
+                  <Typography>Customer VPN public key</Typography>
+                </Grid>
+                <Grid item xs={12} lg={8}>
+                  <StyledTextField disabled={!isSecondaryVpnActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="VPN public key"
+                    defaultValue=""
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} lg={4}>
+                  <Typography>Operator VPN endpoint IP address</Typography>
+                </Grid>
+                <Grid item xs={12} lg={8}>
+                  <StyledTextField disabled={!isSecondaryVpnActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="IP address"
+                    defaultValue="12.34.67.89"
+                    variant="outlined"
+                    InputProps={{ readOnly: true, }}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={4}>
+                  <Typography>Operator VPN public key</Typography>
+                </Grid>
+                <Grid item xs={12} lg={8}>
+                  <StyledTextField disabled={!isSecondaryVpnActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="VPN public key"
+                    defaultValue="mrJP08FDyGK1+9sqRgv5T/38TYNIH4ZR="
+                    variant="outlined"
+                    InputProps={{ readOnly: true, }}
+                  />
+                </Grid>
+              </Grid>
             </Box>
           </Grid>
         </Grid>
@@ -305,300 +352,258 @@ function ConfigurationTab() {
       <Box sx={!isTransferCoreActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12} sx={{ mt: 2 }}>
-            <HeaderText>Transferred core slice configuration</HeaderText>
+            <HeaderText>5G core functions configuration - core slice on operator premices</HeaderText>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography>This IP address will be used to send mobile device traffic to you local resources.</Typography>
           </Grid>
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
             <Box sx={{ mt: 2 }}>
               <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ display: 'flex', alignItems: 'center' }}>
                 <Grid item xs={12} lg={4}>
-                  <Typography>Specify the public IP address of the VPN endpoint</Typography>
+                  <Typography>N6 interface, UPF to DN, primary IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
                   <StyledTextField disabled={!isTransferCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
-                    defaultValue="0.0.0.0"
+                    defaultValue="172.17.17.21"
                     variant="outlined"
+                    InputProps={{ readOnly: true, }}
                   />
                 </Grid>
                 <Grid item xs={12} lg={4}>
-                  <Typography>Specify the VPN public key</Typography>
+                  <Typography>N6 interface, UPF to DN, secondary IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
                   <StyledTextField disabled={!isTransferCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="VPN public key"
+                    label="IP address"
+                    defaultValue="172.17.17.22"
+                    variant="outlined"
+                    InputProps={{ readOnly: true, }}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+          </Grid>
+        </Grid>
+        <BoxInsideRadio />
+      </Box>
+      <Box sx={!isTransferCoreActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={12} sx={{ mt: 2 }}>
+            <HeaderText>5G core functions configuration - UPF on customer premises</HeaderText>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography>You will need this IP address and secrets to connect 5G core functions like UPF to operator core.</Typography>
+          </Grid>
+          <Grid item xs={12} lg={2} />
+          <Grid item xs={12} lg={7}>
+            <Box sx={{ mt: 2 }}>
+              <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ display: 'flex', alignItems: 'center' }}>
+                <Grid item xs={12} lg={5}>
+                  <Typography>N3 interface, UPF to RAN, </Typography>
+                  <Typography>customer UPF primary IP address</Typography>
+                </Grid>
+                <Grid item xs={12} lg={7}>
+                  <StyledTextField disabled={!isTransferCoreActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="IP address"
                     defaultValue=""
                     variant="outlined"
                   />
                 </Grid>
-              </Grid>
-              <Box sx={'selectedFallback' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
-                <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: '2px', display: 'flex', alignItems: 'center' }}>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography>Specify the public IP address of the backup VPN endpoint</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={'selectedFallback'}
-                      sx={{ width: '100%' }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography>Specify the public key of the backup VPN</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={'selectedFallback'}
-                      sx={{ width: '100%' }}
-                      size="small"
-                      label="VPN public key"
-                      defaultValue=""
-                      variant="outlined"
-                    />
-                  </Grid>
+                <Grid item xs={12} lg={5}>
+                  <Typography>N3 interface, UPF to RAN, </Typography>
+                  <Typography>customer UPF secondary IP address</Typography>
                 </Grid>
-              </Box>
-              <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: '2px', display: 'flex', alignItems: 'center' }}>
-                <Grid item xs={12} lg={4}>
-                  <Typography>Private IP subnet (subnets) VNF on the subscriber side</Typography>
-                </Grid>
-                <Grid item xs={12} lg={8}>
+                <Grid item xs={12} lg={7}>
                   <StyledTextField disabled={!isTransferCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
-                    defaultValue="0.0.0.0"
+                    defaultValue=""
                     variant="outlined"
                   />
                 </Grid>
-              </Grid>
-              <Box sx={{ mt: 2 }}>
-                <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: '2px', display: 'flex', alignItems: 'center' }}>
-                  <Grid item xs={12}>
-                    <Typography sx={{ fontWeight: 'bold' }}>For copying:</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={5}>
-                    <Typography>Private IP address of the operator's VPN endpoint - 5G Core</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={5}>
-                    <StyledTextField disabled={!isTransferCoreActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={5}>
-                    <Typography>Public key of the operator's VPN endpoint - 5G Core</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={5}>
-                    <StyledTextField disabled={!isTransferCoreActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="Public key"
-                      defaultValue="some public key"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={5}>
-                    <Typography component={'span'}>Private IP address of the gateway on the <Typography sx={{ textDecoration: 'underline' }} display="inline">subscriber's</Typography> side</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={5}>
-                    <StyledTextField disabled={!isTransferCoreActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={5}>
-                    <Typography component={'span'}>Private IP address of the gateway on the <Typography sx={{ textDecoration: 'underline' }} display="inline">operator's</Typography> side</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={5}>
-                    <StyledTextField disabled={!isTransferCoreActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sx={{ mt: 2 }}>
-                    <Typography>NVF 5G core private IP addresses:</Typography>
-                    <Typography>IP addresses of network functions:</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography>Network function 1</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={!isTransferCoreActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography>Network function 2</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={!isTransferCoreActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography>Network function 3</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={!isTransferCoreActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sx={{ mt: 2 }}>
-                    <Typography>Public IP addresses (subnets) of the RAN, from which incoming traffic of devices via the N2 and N3 interface to the local 5G core on the subscriber side should be allowed:</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography>N2</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={!isTransferCoreActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} lg={2} />
-                  <Grid item xs={12} lg={4}>
-                    <Typography>N3</Typography>
-                  </Grid>
-                  <Grid item xs={12} lg={6}>
-                    <StyledTextField disabled={!isTransferCoreActive()}
-                      sx={{ width: '100%' }}
-                      InputProps={{ readOnly: true, }}
-                      size="small"
-                      label="IP address"
-                      defaultValue="0.0.0.0"
-                      variant="outlined"
-                    />
-                  </Grid>
+                <Grid item xs={12} lg={5}>
+                  <Typography>N4 interface, UPF to SMF, </Typography>
+                  <Typography>customer UPF primary IP address</Typography>
                 </Grid>
-                <Box sx={{ mt: 3 }}>
-                  <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: '2px', display: 'flex', alignItems: 'center' }}>
-                    <Grid item xs={12} lg={6}>
-                      <Typography>Specify public IP addresses for connection from the RAN side via the N2 interface</Typography>
-                    </Grid>
-                    <Grid item xs={12} lg={6}>
-                      <StyledTextField disabled={!isTransferCoreActive()}
-                        sx={{ width: '100%' }}
-                        size="small"
-                        label="IP address"
-                        defaultValue="0.0.0.0"
-                        variant="outlined"
-                      />
-                    </Grid>
-                    <Grid item xs={12} lg={6}>
-                      <Typography>Specify public IP addresses for connection from the RAN side via the N3 interface</Typography>
-                    </Grid>
-                    <Grid item xs={12} lg={6}>
-                      <StyledTextField disabled={!isTransferCoreActive()}
-                        sx={{ width: '100%' }}
-                        size="small"
-                        label="IP address"
-                        defaultValue="0.0.0.0"
-                        variant="outlined"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sx={{ mt: 2 }}>
-                      <Typography sx={{ fontWeight: 'bold' }}>Fallback:</Typography>
-                    </Grid>
-                    <Grid item xs={12} lg={6}>
-                      <Typography>Select a fallback scenario in case the kernel functions are disabled on the subscriber's side</Typography>
-                    </Grid>
-                    <Grid item xs={12} lg={6}>
-                      <StyledTextField disabled={true}
-                        sx={{ width: '100%' }}
-                        size="small"
-                        select
-                        label="Select"
-                        defaultValue="nothing"
-                      >
-                        <MenuItem key='nearest' value='nothing'>do nothing, terminate access for subscribers</MenuItem>
-                        <MenuItem key='backup' value='backup'>redirect traffic to the main core of the operator and send it to the VPN tunnel to the IP address of the gateway on the subscriber's side</MenuItem>
-                        <MenuItem key='public' value='public'>redirect traffic to the main core of the operator and send it to the public network (Internet)</MenuItem>
-                      </StyledTextField>
-                    </Grid>
-                    <Grid item xs={12} lg={6}>
-                      <Typography>The number of seconds before the fallback scenario is activated after a crash</Typography>
-                    </Grid>
-                    <Grid item xs={12} lg={6}>
-                      <StyledTextField disabled={!isTransferCoreActive()}
-                        sx={{ width: '100%' }}
-                        size="small"
-                        label="Seconds"
-                        defaultValue="30"
-                      >
-                      </StyledTextField>
-                    </Grid>
-                    <Grid item xs={12} lg={6}>
-                      <Typography>The number of seconds before returning to the main scenario after recovery</Typography>
-                    </Grid>
-                    <Grid item xs={12} lg={6}>
-                      <StyledTextField disabled={!isTransferCoreActive()}
-                        sx={{ width: '100%' }}
-                        size="small"
-                        label="Seconds"
-                        defaultValue="30"
-                      >
-                        <MenuItem key='nearest' value='nothing'>do nothing, terminate access for subscribers</MenuItem>
-                        <MenuItem key='backup' value='backup'>redirect traffic to the main core of the operator and send it to the VPN tunnel to the IP address of the gateway on the subscriber's side</MenuItem>
-                        <MenuItem key='public' value='public'>redirect traffic to the main core of the operator and send it to the public network (Internet)</MenuItem>
-                      </StyledTextField>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </Box>
+                <Grid item xs={12} lg={7}>
+                  <StyledTextField disabled={!isTransferCoreActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="IP address"
+                    defaultValue=""
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} lg={5}>
+                  <Typography>N4 interface, UPF to SMF, </Typography>
+                  <Typography>customer UPF secondary IP address</Typography>
+                </Grid>
+                <Grid item xs={12} lg={7}>
+                  <StyledTextField disabled={!isTransferCoreActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="IP address"
+                    defaultValue=""
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} lg={5}>
+                  <Typography>N4 interface, UPF to SMF, </Typography>
+                  <Typography>operator SMF primary IP address</Typography>
+                </Grid>
+                <Grid item xs={12} lg={7}>
+                  <StyledTextField disabled={!isTransferCoreActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="IP address"
+                    defaultValue="172.17.17.31"
+                    variant="outlined"
+                    InputProps={{ readOnly: true, }}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={5}>
+                  <Typography>N4 interface, UPF to SMF, </Typography>
+                  <Typography>operator SMF secondary IP address</Typography>
+                </Grid>
+                <Grid item xs={12} lg={7}>
+                  <StyledTextField disabled={!isTransferCoreActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label="IP address"
+                    defaultValue="172.17.17.32"
+                    variant="outlined"
+                    InputProps={{ readOnly: true, }}
+                  />
+                </Grid>
+              </Grid>
             </Box>
           </Grid>
         </Grid>
+        <BoxInsideRadio />
       </Box>
-      <BoxInsideRadio />
+      <Box sx={!isTransferCoreActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={12} sx={{ mt: 2, mb: 2 }}>
+            <HeaderText>5G core functions configuration - core slice on customer premises</HeaderText>
+          </Grid>
+          <Grid item xs={12} lg={2} />
+          <Grid item xs={12} lg={7}>
+            <Stack spacing={2}>
+              <StyledButton variant='outlined' disabled={!(isTransferCoreActive() && selectedTransferCore === 'operator')}>
+                Download containers and configurations of the operator supplied 3GPP core
+              </StyledButton>
+              <StyledButton variant='outlined' disabled={!(isTransferCoreActive() && selectedTransferCore === 'own')}>
+                Download configuration and secrets to use your own 3GPP compatible 5G core
+              </StyledButton>
+            </Stack>
+          </Grid>
+        </Grid>
+        <BoxInsideRadio />
+      </Box>
+      <Box sx={!(isActivateCoreSliceMsActive() || isRerouteTrafficMsActive()) ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={12} sx={{ mt: 2 }}>
+            <HeaderText>5G core functions configuration - UPF on customer premises</HeaderText>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography>You will need this IP address and secrets to connect 5G core functions like UPF to operator core.</Typography>
+          </Grid>
+          <Grid item xs={12} lg={2} />
+          <Grid item xs={12} lg={7}>
+            <Box sx={{ mt: 2 }}>
+              <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ display: 'flex', alignItems: 'center' }}>
+                <Grid item xs={12} lg={6}>
+                  <Box sx={!isActivateCoreSliceMsActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+                    <Typography>Activate core slice on the operator side</Typography>
+                    <Typography>and handle devices 5G mobile traffic</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <StyledTextField disabled={!isActivateCoreSliceMsActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label=""
+                    defaultValue=""
+                    variant="outlined"
+                    type='number'
+                    InputProps={{
+                      endAdornment: <InputAdornment position="end">ms</InputAdornment>,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <Box sx={!isActivateCoreSliceMsActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+                    <Typography>Deactivate core slice on the operator side </Typography>
+                    <Typography>and stop handling devices 5G mobile traffic</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <StyledTextField disabled={!isActivateCoreSliceMsActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label=""
+                    defaultValue=""
+                    variant="outlined"
+                    type='number'
+                    InputProps={{
+                      endAdornment: <InputAdornment position="end">ms</InputAdornment>,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <Box sx={!isRerouteTrafficMsActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+                    <Typography>Reroute traffic to if customer endpoint </Typography>
+                    <Typography>or sliced core is not reachable</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <StyledTextField disabled={!isRerouteTrafficMsActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label=""
+                    defaultValue=""
+                    variant="outlined"
+                    type='number'
+                    InputProps={{
+                      endAdornment: <InputAdornment position="end">ms</InputAdornment>,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <Box sx={!isRerouteTrafficMsActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+                    <Typography>Reroute traffic back to customer endpoint </Typography>
+                    <Typography>or sliced core after recovery</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <StyledTextField disabled={!isRerouteTrafficMsActive()}
+                    sx={{ width: '100%' }}
+                    size="small"
+                    label=""
+                    defaultValue=""
+                    variant="outlined"
+                    type='number'
+                    InputProps={{
+                      endAdornment: <InputAdornment position="end">ms</InputAdornment>,
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+          </Grid>
+        </Grid>
+        <BoxInsideRadio />
+      </Box>
     </Box>
   )
 }
