@@ -86,8 +86,8 @@ const IndexPage = () => {
   }
 
   const sliceRunning = (slice) => {
-    let afterStartDate = dayjs().isSameOrAfter(dayjs(slice.startDate), 'day')
-    let beforeEndDate = dayjs().isBefore(dayjs(slice.endDate), 'day')
+    let afterStartDate = dayjs().isSameOrAfter(slice.time.startDate, 'day')
+    let beforeEndDate = dayjs().isBefore(slice.time.endDate, 'day')
     if (!afterStartDate) {
       return 'not started yet'
     } else if (afterStartDate && beforeEndDate) {
@@ -115,7 +115,7 @@ const IndexPage = () => {
                 <StyledTableCell align="right">Running</StyledTableCell>
                 <StyledTableCell align="right">Type</StyledTableCell>
                 <StyledTableCell align="right">Geography</StyledTableCell>
-                <StyledTableCell align="right">Started</StyledTableCell>
+                <StyledTableCell align="right">Start at</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -129,7 +129,7 @@ const IndexPage = () => {
                   <TableCell align="right">{sliceRunning(slice)}</TableCell>
                   <TableCell align="right">{sliceType(slice)}</TableCell>
                   <TableCell align="right">{slice.geography.type}</TableCell>
-                  <TableCell align="right">{slice.started}</TableCell>
+                  <TableCell align="right">{dayjs(slice.time.startDate).format('DD/MM/YYYY')}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
