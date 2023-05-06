@@ -1,4 +1,4 @@
-import { HeaderText, StyledTableCell } from "@/components/generalComponents"
+import { HeaderText, StyledButton, StyledSlider, StyledTableCell } from "@/components/generalComponents"
 import { Box, Paper, Table, TableHead, TableRow, TableBody, TableCell, Typography } from '@mui/material'
 
 const topTenDevices = [
@@ -19,6 +19,33 @@ const topTenDevices = [
   {},
   {},
 ]
+
+const marksX = [
+  {
+    value: 0,
+    label: '1 hour',
+  },
+  {
+    value: 20,
+    label: '1 day',
+  },
+  {
+    value: 40,
+    label: '1 week',
+  },
+  {
+    value: 60,
+    label: '10 days',
+  },
+  {
+    value: 80,
+    label: '1 month',
+  },
+  {
+    value: 100,
+    label: '1 year',
+  },
+];
 
 function ThirdTable() {
   let index = 1
@@ -64,6 +91,23 @@ function ThirdTable() {
           </TableBody>
         </Table>
       </Paper>
+      <Box sx={{mt: 1, display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+      <StyledSlider
+        sx={{
+          width: 300, mt: 1, ml: 3,
+        }}
+        size='small'
+        defaultValue={60}
+        valueLabelDisplay="off"
+        step={null}
+        marks={marksX}
+        track={false}
+      />
+      <Box sx={{ ml: 'auto', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <Typography>Report from 2023.03.13 to 2023.03.19</Typography>
+        <StyledButton sx={{ ml: 2 }} variant='outlined'>Change dates</StyledButton>
+      </Box>
+      </Box>
     </Box>
   )
 }
