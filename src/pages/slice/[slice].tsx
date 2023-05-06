@@ -27,7 +27,7 @@ export default function SlicePage() {
 
   const [changesHappened, setChangesHappened] = useState(false)
 
-  const { setSliceName } = useContext(MyContext)
+  const { setSliceName, setSliceDescription } = useContext(MyContext)
   const { setSelectedRadio,
     setBandwidthWithPerSlice, setNumberOfDevicesWithPerSlice,
     setBandwidthWithPerDevice, setNumberOfDevicesWithPerDevice,
@@ -36,9 +36,10 @@ export default function SlicePage() {
     setSelectedTrafficWithOperator, setSelectedFallbackWithOperator,
     setSelectedDataCenterWithLocal, setSelectedTrafficWithLocal, setSelectedFallbackWithLocal,
     setSelectedTransferCore, setSelectedFallbackWithTransfer } = useContext(MyContext)
-  const { setGeographyType } = useContext(MyContext)
+  const { setGeographyType, setCountry, setShapesGeography } = useContext(MyContext)
   const { setStartDate, setCheckedEndDate, setEndDate } = useContext(MyContext)
   const { setSelectedBilling } = useContext(MyContext)
+  const { setSelectedImsi } = useContext(MyContext)
 
   const [allDataLoaded, setAllDataLoaded] = useState(false)
 
@@ -48,9 +49,9 @@ export default function SlicePage() {
         var slicesFullRef = firebase.database().ref('slices_preview/' + user?.id + '/' + slice);
         slicesFullRef.on('value', (snapshot) => {
           const data = snapshot.val()
-          console.log(data)
           if (data) {
             setSliceName(data.name)
+            setSliceDescription(data.description)
             setSelectedRadio(data.radio.type)
             switch (data.radio.type) {
               case 'per_slice':
@@ -87,12 +88,21 @@ export default function SlicePage() {
                 break
             }
             setGeographyType(data.geography.type)
+            switch (data.geography.type) {
+              case 'country':
+                setCountry(data.geography.country)
+                break
+              default:
+                setShapesGeography(data.geography.shapes.map(shapeJson => JSON.parse(shapeJson)))
+                break
+            }
             setStartDate(dayjs(data.time.startDate))
             if (data.time.endDate != '') {
               setCheckedEndDate(true)
               setEndDate(dayjs(data.time.endDate))
             }
             setSelectedBilling(data.billing)
+            setSelectedImsi(data.configuration.imsi.type)
 
             setAllDataLoaded(true)
           }

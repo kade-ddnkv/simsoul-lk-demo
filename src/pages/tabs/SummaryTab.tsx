@@ -3,7 +3,9 @@ import React, { useContext } from 'react'
 import { Grid, Typography, Box } from '@mui/material'
 import { HeaderText } from '@/components/generalComponents'
 
-function SummaryTab() {
+type insidePage = 'create' | 'settings'
+
+function SummaryTab({ insidePage }: { insidePage: insidePage }) {
   const { selectedRadio,
     bandwidthWithPerSlice, numberOfDevicesWithPerSlice,
     bandwidthWithPerDevice, numberOfDevicesWithPerDevice,
@@ -12,7 +14,7 @@ function SummaryTab() {
     selectedTrafficWithOperator, selectedFallbackWithOperator,
     selectedDataCenterWithLocal, selectedTrafficWithLocal, selectedFallbackWithLocal,
     selectedTransferCore, selectedFallbackWithTransfer } = useContext(MyContext)
-  const { geographyType } = useContext(MyContext)
+  const { geographyType, country, shapesGeography } = useContext(MyContext)
   const { startDate, endDate, checkedEndDate } = useContext(MyContext)
   const { selectedBilling } = useContext(MyContext)
 
@@ -45,11 +47,17 @@ function SummaryTab() {
   function geographySummary() {
     switch (geographyType) {
       case 'point':
-        return 'One point: .'
+        if (shapesGeography.length === 0) {
+          return <NotSelected />
+        }
+        return 'One point: <some_address_from_map>.'
       case 'region':
-        return 'Region in country: .'
+        if (shapesGeography.length === 0) {
+          return <NotSelected />
+        }
+        return 'Region in country: <some_country_from_map>.'
       case 'country':
-        return 'Country: .'
+        return 'Country: ' + country + '.'
     }
   }
 
@@ -58,15 +66,15 @@ function SummaryTab() {
   return (
     <>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item xs={12}>
+        {insidePage === 'create' && <Grid item xs={12}>
           <HeaderText>Summary</HeaderText>
-        </Grid>
-        <Grid item xs={12}>
+        </Grid>}
+        {insidePage === 'create' && <Grid item xs={12}>
           <Typography>Review the selected options</Typography>
-        </Grid>
+        </Grid>}
         <Grid item xs={12} sx={{ mt: 1 }} />
         <Grid item xs={12} lg={1.5}>
-          <Typography sx={{ fontWeight: 'bold' }}>Radio slice: </Typography>
+          <Typography sx={{ fontWeight: insidePage === 'create' ? 'bold' : 'normal' }}>Radio slice: </Typography>
         </Grid>
         <Grid item xs={12} lg={10.5}>
           <Typography>{radioSummary()}</Typography>
@@ -91,7 +99,7 @@ function SummaryTab() {
         </Grid>
         <Grid item xs={12} sx={{ mt: 1 }} />
         <Grid item xs={12} lg={1.5}>
-          <Typography sx={{ fontWeight: 'bold' }}>Core slice: </Typography>
+          <Typography sx={{ fontWeight: insidePage === 'create' ? 'bold' : 'normal' }}>Core slice: </Typography>
         </Grid>
         <Grid item xs={12} lg={10.5}>
           <Typography>{coreSummary()}</Typography>
@@ -139,14 +147,14 @@ function SummaryTab() {
         </Grid>
         <Grid item xs={12} sx={{ mt: 1 }} />
         <Grid item xs={12} lg={1.5}>
-          <Typography sx={{ fontWeight: 'bold' }}>Geography: </Typography>
+          <Typography sx={{ fontWeight: insidePage === 'create' ? 'bold' : 'normal' }}>Geography: </Typography>
         </Grid>
         <Grid item xs={12} lg={10.5}>
-          <Typography>{geographySummary()}</Typography>
+          <Typography component='span'>{geographySummary()}</Typography>
         </Grid>
         <Grid item xs={12} sx={{ mt: 1 }} />
         <Grid item xs={12} lg={1.5}>
-          <Typography sx={{ fontWeight: 'bold' }}>Dates of work: </Typography>
+          <Typography sx={{ fontWeight: insidePage === 'create' ? 'bold' : 'normal' }}>Dates of work: </Typography>
         </Grid>
         <Grid item xs={12} lg={10.5}>
           <Typography component='span'>
@@ -157,7 +165,7 @@ function SummaryTab() {
         </Grid>
         <Grid item xs={12} sx={{ mt: 1 }} />
         <Grid item xs={12} lg={1.5}>
-          <Typography sx={{ fontWeight: 'bold' }}>Billing: </Typography>
+          <Typography sx={{ fontWeight: insidePage === 'create' ? 'bold' : 'normal' }}>Billing: </Typography>
         </Grid>
         <Grid item xs={12} lg={10.5}>
           <Typography component='span'>{selectedBilling}</Typography>

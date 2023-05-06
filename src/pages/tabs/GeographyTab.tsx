@@ -2,7 +2,7 @@ import React, { useMemo, useContext, useRef, useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, useLoadScript, Circle, DrawingManager } from '@react-google-maps/api';
 import { Box, Grid, Typography, FormControlLabel, RadioGroup, Radio, MenuItem } from '@mui/material';
 import { HeaderText, StyledButton, StyledTextField } from '@/components/generalComponents';
-import { MyContext } from '@/context/myContext';
+import { MyContext, MyContextApi } from '@/context/myContext';
 
 const containerStyle = {
   width: '100%',
@@ -14,6 +14,71 @@ const center = {
   lng: 20.468065,
 };
 
+const shapesOptions = {
+  fillColor: '#8d9da6',
+  fillOpacity: 0.1,
+  strokeWeight: 2,
+  draggable: true,
+  editable: true,
+}
+
+const svgMarker = {
+  path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
+  fillColor: "black",
+  fillOpacity: 0.8,
+  strokeWeight: 0,
+  rotation: 0,
+  scale: 2,
+  anchor: { x: 0, y: 20 },
+}
+
+const markerOptions = {
+  icon: svgMarker,
+  draggable: true,
+}
+
+export const exportShape = (shape) => {
+  switch (shape.type) {
+    case 'marker':
+      return {
+        ...markerOptions,
+        type: shape.type,
+        position: {
+          lat: shape.position.lat(),
+          lng: shape.position.lng(),
+        }
+      }
+    case 'circle':
+      return {
+        ...shapesOptions,
+        type: shape.type,
+        center: {
+          lat: shape.center.lat(),
+          lng: shape.center.lng(),
+        },
+        radius: shape.radius
+      }
+    case 'rectangle':
+      return {
+        ...shapesOptions,
+        type: shape.type,
+        bounds: {
+          north: shape.bounds.getNorthEast().lat(),
+          south: shape.bounds.getSouthWest().lat(),
+          east: shape.bounds.getNorthEast().lng(),
+          west: shape.bounds.getSouthWest().lng(),
+        },
+      }
+    case 'polygon':
+      return {
+        ...shapesOptions,
+        type: shape.type,
+        paths: shape.getPaths().getArray()[0].getArray().map(
+          coords => { return { lat: coords.lat(), lng: coords.lng() } })
+      }
+  }
+}
+
 const libraries = ["drawing"]
 
 let mapRef = undefined
@@ -23,29 +88,7 @@ let shapes = []
 // const drawingManager = useRef()
 let drawingManager = { current: undefined }
 
-const handlerLoadDrawingManager = (drawingManagerInstance) => {
-  drawingManager.current = drawingManagerInstance
-}
-
-function handleOverlayComplete(e) {
-  const shape = e.overlay
-  shape.type = e.type
-  // google.maps.event.addListener(shape, "click", () => {
-  //   this.toggleSelection(shape);
-  // });
-  // this.toggleSelection(shape);
-  // setShapes([...shapes, shape])
-  shapes.push(shape)
-  drawingManager.current.setDrawingMode(null)
-  drawingManager.current.setOptions({ drawingControl: false })
-}
-
 let countryLayer = null
-
-const onMapLoad = (map) => {
-  mapRef = map
-  countryLayer = map.getFeatureLayer('COUNTRY')
-}
 
 function handleCountrySelection(country) {
   const countryInfo = {
@@ -78,7 +121,7 @@ function handleCountrySelection(country) {
       return featureStyleOptions;
     }
   };
-  
+
   mapRef.setCenter(countryInfo[country].center)
   mapRef.setZoom(countryInfo[country].zoom)
 }
@@ -89,7 +132,22 @@ function resetContrySelection() {
 
 let drawingControlOptionsChangeable = {
   position: undefined,
-  drawingModes: [''],
+  drawingModes: [],
+}
+
+function switchDrawingModes(geographyTypes: string, country: string) {
+  switch (geographyTypes) {
+    case 'point':
+      changeDrawingModes(['marker'])
+      break
+    case 'region':
+      changeDrawingModes(['circle', 'rectangle', 'polygon'])
+      break
+    case 'country':
+      changeDrawingModes([])
+      handleCountrySelection(country)
+      break
+  }
 }
 
 function changeDrawingModes(drawingModes: string[]) {
@@ -100,49 +158,70 @@ function changeDrawingModes(drawingModes: string[]) {
 }
 
 const RenderMap = () => {
-  drawingControlOptionsChangeable = {
-    position: google.maps.ControlPosition.TOP_RIGHT,
-    drawingModes: ['marker'],
+  const { setShapesGeography } = useContext(MyContextApi)
+  const { geographyType, country, shapesGeography } = useContext(MyContext)
+
+  const addShapeToMap = (shape) => {
+    shape.map = mapRef
+    switch (shape.type) {
+      case 'marker':
+        handleShapeAdded(new google.maps.Marker(shape))
+        break
+      case 'circle':
+        handleShapeAdded(new google.maps.Circle(shape))
+        break
+      case 'rectangle':
+        handleShapeAdded(new google.maps.Rectangle(shape))
+        break
+      case 'polygon':
+        handleShapeAdded(new google.maps.Polygon(shape))
+        break
+    }
   }
 
-  const svgMarker = {
-    path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
-    fillColor: "black",
-    fillOpacity: 0.8,
-    strokeWeight: 0,
-    rotation: 0,
-    scale: 2,
-    anchor: new google.maps.Point(0, 20),
-  };
+  const onMapLoad = (map) => {
+    mapRef = map
+    countryLayer = map.getFeatureLayer('COUNTRY')
+  }
+
+  const handlerLoadDrawingManager = (drawingManagerInstance) => {
+    drawingManager.current = drawingManagerInstance
+    // Загрузка сохраненных данных при первой загрузке компонента.
+    deleteShapes()
+    resetContrySelection()
+    drawingManager.current.setDrawingMode(null)
+    switchDrawingModes(geographyType, country)
+    // Загрузка сохраненных объектов на карту.
+    let shapesTemp = shapesGeography
+    shapesTemp.forEach(shape => {
+      addShapeToMap(shape)
+    })
+  }
+
+  function onOverlayComplete(e) {
+    const shape = e.overlay
+    shape.type = e.type
+    handleShapeAdded(shape)
+  }
+
+  function handleShapeAdded(shape) {
+    shapes.push(shape)
+    drawingManager.current.setDrawingMode(null)
+    drawingManager.current.setOptions({ drawingControl: false })
+    setShapesGeography(shapes)
+  }
+
+  if (!drawingControlOptionsChangeable.position) {
+    drawingControlOptionsChangeable.position = google.maps.ControlPosition.TOP_RIGHT
+  }
 
   const drawingManagerOptions = {
     drawingControl: true,
     drawingControlOptions: drawingControlOptionsChangeable,
-    markerOptions: {
-      icon: svgMarker,
-      draggable: true,
-    },
-    circleOptions: {
-      fillColor: '#8d9da6',
-      fillOpacity: 0.1,
-      strokeWeight: 2,
-      draggable: true,
-      editable: true,
-    },
-    rectangleOptions: {
-      fillColor: '#8d9da6',
-      fillOpacity: 0.1,
-      strokeWeight: 2,
-      draggable: true,
-      editable: true,
-    },
-    polygonOptions: {
-      fillColor: '#8d9da6',
-      fillOpacity: 0.1,
-      strokeWeight: 2,
-      draggable: true,
-      editable: true,
-    },
+    markerOptions: markerOptions,
+    circleOptions: shapesOptions,
+    rectangleOptions: shapesOptions,
+    polygonOptions: shapesOptions,
   };
 
   const mapControlOptions = {
@@ -169,16 +248,9 @@ const RenderMap = () => {
       >
         <DrawingManager
           onLoad={handlerLoadDrawingManager}
-          onOverlayComplete={handleOverlayComplete}
+          onOverlayComplete={onOverlayComplete}
           options={drawingManagerOptions}
         />
-        {/* <Circle
-            center={center}
-            options={options}
-            draggable={true}
-            // onDragStart={}
-            onDragEnd={(event) => console.log(event.latLng.toString())}
-          /> */}
       </GoogleMap>
     </>
   )
@@ -191,26 +263,19 @@ function deleteShapes() {
 }
 
 const RadioButtonsGeographyType = () => {
+  const { setShapesGeography } = useContext(MyContextApi)
   const { geographyType, setGeographyType } = useContext(MyContext)
-  const [country, setCountry] = useState('Serbia')
+  const { country, setCountry } = useContext(MyContext)
+  // const [geographyType, setGeographyType] = useState('point');
+  // const [country, setCountry] = useState('Serbia')
 
   const handleGeographyTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGeographyType(event.target.value)
     deleteShapes()
+    setShapesGeography(shapes)
     resetContrySelection()
     drawingManager.current.setDrawingMode(null)
-    switch (event.target.value) {
-      case 'point':
-        changeDrawingModes(['marker'])
-        break
-      case 'region':
-        changeDrawingModes(['circle', 'rectangle', 'polygon'])
-        break
-      case 'country':
-        changeDrawingModes([])
-        handleCountrySelection(country)
-        break
-    }
+    switchDrawingModes(event.target.value, country)
   }
 
   const handleCountryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -280,7 +345,7 @@ function GeographyTab() {
           <Grid item xs={12} lg={3} sx={{ mt: 1 }}>
             <Typography>Select one of 3 options:</Typography>
           </Grid>
-          <Grid item xs={12} lg={9} sx={{ pb: 1}}>
+          <Grid item xs={12} lg={9} sx={{ pb: 1 }}>
             <RadioButtonsGeographyType />
           </Grid>
         </Grid>

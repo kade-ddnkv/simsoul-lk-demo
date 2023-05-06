@@ -7,7 +7,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import { alpha } from "@mui/material";
 import { useRouter } from 'next/router';
 import Geography from '@/pages/tabs/GeographyTab';
-import { HeaderText, StyledButton, StyledTextField, BoxInsideRadio } from '@/components/generalComponents';
+import { HeaderText, StyledButton, StyledTextField, ReadOnlyStyledTextField, BoxInsideRadio } from '@/components/generalComponents';
 import { MyContext } from '@/context/myContext';
 
 function ConfigurationTab() {
@@ -20,37 +20,65 @@ function ConfigurationTab() {
 
   const { selectedImsi, setSelectedImsi } = useContext(MyContext)
 
-  function isCoreWithVpnActive() {
-    return (selectedCore === 'operator' && selectedTrafficWithOperator === 'VPN')
-      || (selectedCore === 'local' && selectedTrafficWithLocal === 'VPN')
+  function isAnyRadioActive() {
+    return selectedRadio !== 'nothing'
+  }
+
+  function isAnyCoreActive() {
+    return selectedCore !== 'nothing'
   }
 
   function isPrimaryVpnActive() {
-    return isCoreWithVpnActive() || isTransferCoreActive()
+    return isAnyCoreActive()
   }
 
   function isSecondaryVpnActive() {
-    return (selectedCore === 'operator' && selectedTrafficWithOperator === 'VPN' && selectedFallbackWithOperator === 'VPN')
-      || (selectedCore === 'local' && selectedTrafficWithLocal === 'VPN' && selectedFallbackWithLocal === 'VPN')
-      || (isTransferCoreActive() && selectedFallbackWithTransfer === 'VPN')
+    return isAnyCoreActive()
   }
 
-  function isTransferCoreActive() {
-    return selectedCore === 'transfer';
+  function isN6InterfaceActive() {
+    return selectedCore === 'operator' || selectedCore === 'local'
   }
 
-  function isCoreFallbackVpnActive() {
-    return (selectedCore === 'operator' && selectedTrafficWithOperator === 'VPN' && selectedFallbackWithOperator !== 'null')
-      || (selectedCore === 'local' && selectedTrafficWithLocal === 'VPN' && selectedFallbackWithLocal !== 'null')
+  function isN3N4InterfaceActive() {
+    return selectedCore === 'transfer'
   }
 
-  function isActivateCoreSliceMsActive() {
-    return isTransferCoreActive() && selectedFallbackWithTransfer !== 'null'
+  function isDownloadConfigurationsActive() {
+    return selectedCore === 'transfer'
   }
 
-  function isRerouteTrafficMsActive() {
-    return (isTransferCoreActive() && selectedFallbackWithTransfer !== 'null') || isCoreFallbackVpnActive()
-  }
+  // function isCoreWithVpnActive() {
+  //   return (selectedCore === 'operator' && selectedTrafficWithOperator === 'VPN')
+  //     || (selectedCore === 'local' && selectedTrafficWithLocal === 'VPN')
+  // }
+
+  // function isPrimaryVpnActive() {
+  //   return isCoreWithVpnActive() || isTransferCoreActive()
+  // }
+
+  // function isSecondaryVpnActive() {
+  //   return (selectedCore === 'operator' && selectedTrafficWithOperator === 'VPN' && selectedFallbackWithOperator === 'VPN')
+  //     || (selectedCore === 'local' && selectedTrafficWithLocal === 'VPN' && selectedFallbackWithLocal === 'VPN')
+  //     || (isTransferCoreActive() && selectedFallbackWithTransfer === 'VPN')
+  // }
+
+  // function isTransferCoreActive() {
+  //   return selectedCore === 'transfer';
+  // }
+
+  // function isCoreFallbackVpnActive() {
+  //   return (selectedCore === 'operator' && selectedTrafficWithOperator === 'VPN' && selectedFallbackWithOperator !== 'null')
+  //     || (selectedCore === 'local' && selectedTrafficWithLocal === 'VPN' && selectedFallbackWithLocal !== 'null')
+  // }
+
+  // function isActivateCoreSliceMsActive() {
+  //   return isTransferCoreActive() && selectedFallbackWithTransfer !== 'null'
+  // }
+
+  // function isRerouteTrafficMsActive() {
+  //   return (isTransferCoreActive() && selectedFallbackWithTransfer !== 'null') || isCoreFallbackVpnActive()
+  // }
 
   const handleImsiChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedImsi((event.target as HTMLInputElement).value);
@@ -154,7 +182,7 @@ function ConfigurationTab() {
             <BoxInsideRadio sx={{ ml: 0 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <StyledButton variant='outlined'>Send</StyledButton>
-                <Typography sx={{ ml: 3 }}>Last command send on 2023.04.15 17:01:15</Typography>
+                <Typography sx={{ ml: 3 }}>Last command sent on 2023.04.15 17:01:15</Typography>
               </Box>
             </BoxInsideRadio>
           </Grid>
@@ -166,17 +194,19 @@ function ConfigurationTab() {
             <HeaderText sx={{ fontSize: '1.3rem' }}>Radio slice configuration</HeaderText>
           </Grid>
           <Grid item xs={12} lg={9} sx={{ mb: 2 }}>
-            <Typography>There is no separate configuration for the radio slice except options you selected on the radio slice page.</Typography>
-            <Typography>Please note that if you want to route traffic of your mobile devices to your local facility, you need to activate core slice in addition to your radio slice.</Typography>
-            <Typography sx={{ mt: 2 }}>You can access the list of the 5G base stations that is configured for security or some other reason.</Typography>
+            <Box sx={!isAnyRadioActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+              <Typography>There is no separate configuration for the radio slice except options you selected on the radio slice page.</Typography>
+              <Typography>Please note that if you want to route traffic of your mobile devices to your local facility, you need to activate core slice in addition to your radio slice.</Typography>
+              <Typography sx={{ mt: 2 }}>You can access the list of the 5G base stations that is configured for security or some other reason.</Typography>
+            </Box>
           </Grid>
           <Grid item xs={12} lg={3} />
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
             <BoxInsideRadio sx={{ ml: 0 }}>
               <Stack direction='row' spacing={2}>
-                <StyledButton variant='outlined'>Download</StyledButton>
-                <StyledButton variant='outlined'>Access via API</StyledButton>
+                <StyledButton variant='outlined' disabled={!isAnyRadioActive()}>Download</StyledButton>
+                <StyledButton variant='outlined' disabled={!isAnyRadioActive()}>Access via API</StyledButton>
               </Stack>
             </BoxInsideRadio>
           </Grid>
@@ -227,7 +257,7 @@ function ConfigurationTab() {
                   <Typography>Operator VPN endpoint IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
-                  <StyledTextField disabled={!isPrimaryVpnActive()}
+                  <ReadOnlyStyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
@@ -240,7 +270,7 @@ function ConfigurationTab() {
                   <Typography>Operator VPN public key</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
-                  <StyledTextField disabled={!isPrimaryVpnActive()}
+                  <ReadOnlyStyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="VPN public key"
@@ -253,7 +283,7 @@ function ConfigurationTab() {
                   <Typography>Preassigned IP subnets for 5G devices</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
-                  <StyledTextField disabled={!isPrimaryVpnActive()}
+                  <ReadOnlyStyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP subnet"
@@ -266,7 +296,7 @@ function ConfigurationTab() {
                   <Typography>Preassigned IP subnet for sliced 5G core functions</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
-                  <StyledTextField disabled={!isPrimaryVpnActive()}
+                  <ReadOnlyStyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP subnet"
@@ -321,7 +351,7 @@ function ConfigurationTab() {
                   <Typography>Operator VPN endpoint IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
-                  <StyledTextField disabled={!isSecondaryVpnActive()}
+                  <ReadOnlyStyledTextField disabled={!isSecondaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
@@ -334,7 +364,7 @@ function ConfigurationTab() {
                   <Typography>Operator VPN public key</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
-                  <StyledTextField disabled={!isSecondaryVpnActive()}
+                  <ReadOnlyStyledTextField disabled={!isSecondaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="VPN public key"
@@ -349,10 +379,10 @@ function ConfigurationTab() {
         </Grid>
         <BoxInsideRadio />
       </Box>
-      <Box sx={!isTransferCoreActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+      <Box sx={!isN6InterfaceActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12} sx={{ mt: 2 }}>
-            <HeaderText>5G core functions configuration - core slice on operator premices</HeaderText>
+            <HeaderText>5G core functions configuration - core slice on operator premises</HeaderText>
           </Grid>
           <Grid item xs={12}>
             <Typography>This IP address will be used to send mobile device traffic to you local resources.</Typography>
@@ -365,7 +395,7 @@ function ConfigurationTab() {
                   <Typography>N6 interface, UPF to DN, primary IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
-                  <StyledTextField disabled={!isTransferCoreActive()}
+                  <ReadOnlyStyledTextField disabled={!isN6InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
@@ -378,7 +408,7 @@ function ConfigurationTab() {
                   <Typography>N6 interface, UPF to DN, secondary IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={8}>
-                  <StyledTextField disabled={!isTransferCoreActive()}
+                  <ReadOnlyStyledTextField disabled={!isN6InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
@@ -393,7 +423,7 @@ function ConfigurationTab() {
         </Grid>
         <BoxInsideRadio />
       </Box>
-      <Box sx={!isTransferCoreActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+      <Box sx={!isN3N4InterfaceActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <HeaderText>5G core functions configuration - UPF on customer premises</HeaderText>
@@ -410,7 +440,7 @@ function ConfigurationTab() {
                   <Typography>customer UPF primary IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={7}>
-                  <StyledTextField disabled={!isTransferCoreActive()}
+                  <StyledTextField disabled={!isN3N4InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
@@ -423,7 +453,7 @@ function ConfigurationTab() {
                   <Typography>customer UPF secondary IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={7}>
-                  <StyledTextField disabled={!isTransferCoreActive()}
+                  <StyledTextField disabled={!isN3N4InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
@@ -436,7 +466,7 @@ function ConfigurationTab() {
                   <Typography>customer UPF primary IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={7}>
-                  <StyledTextField disabled={!isTransferCoreActive()}
+                  <StyledTextField disabled={!isN3N4InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
@@ -449,7 +479,7 @@ function ConfigurationTab() {
                   <Typography>customer UPF secondary IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={7}>
-                  <StyledTextField disabled={!isTransferCoreActive()}
+                  <StyledTextField disabled={!isN3N4InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
@@ -462,7 +492,7 @@ function ConfigurationTab() {
                   <Typography>operator SMF primary IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={7}>
-                  <StyledTextField disabled={!isTransferCoreActive()}
+                  <ReadOnlyStyledTextField disabled={!isN3N4InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
@@ -476,7 +506,7 @@ function ConfigurationTab() {
                   <Typography>operator SMF secondary IP address</Typography>
                 </Grid>
                 <Grid item xs={12} lg={7}>
-                  <StyledTextField disabled={!isTransferCoreActive()}
+                  <ReadOnlyStyledTextField disabled={!isN3N4InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label="IP address"
@@ -491,7 +521,7 @@ function ConfigurationTab() {
         </Grid>
         <BoxInsideRadio />
       </Box>
-      <Box sx={!isTransferCoreActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+      <Box sx={!isDownloadConfigurationsActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12} sx={{ mt: 2, mb: 2 }}>
             <HeaderText>5G core functions configuration - core slice on customer premises</HeaderText>
@@ -499,10 +529,10 @@ function ConfigurationTab() {
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
             <Stack spacing={2}>
-              <StyledButton variant='outlined' disabled={!(isTransferCoreActive() && selectedTransferCore === 'operator')}>
+              <StyledButton variant='outlined' disabled={!isDownloadConfigurationsActive()}>
                 Download containers and configurations of the operator supplied 3GPP core
               </StyledButton>
-              <StyledButton variant='outlined' disabled={!(isTransferCoreActive() && selectedTransferCore === 'own')}>
+              <StyledButton variant='outlined' disabled={!isDownloadConfigurationsActive()}>
                 Download configuration and secrets to use your own 3GPP compatible 5G core
               </StyledButton>
             </Stack>
@@ -510,7 +540,7 @@ function ConfigurationTab() {
         </Grid>
         <BoxInsideRadio />
       </Box>
-      <Box sx={!(isActivateCoreSliceMsActive() || isRerouteTrafficMsActive()) ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
+      <Box sx={!isAnyCoreActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <HeaderText>5G core functions configuration - UPF on customer premises</HeaderText>
@@ -523,13 +553,11 @@ function ConfigurationTab() {
             <Box sx={{ mt: 2 }}>
               <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ display: 'flex', alignItems: 'center' }}>
                 <Grid item xs={12} lg={6}>
-                  <Box sx={!isActivateCoreSliceMsActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
-                    <Typography>Activate core slice on the operator side</Typography>
-                    <Typography>and handle devices 5G mobile traffic</Typography>
-                  </Box>
+                  <Typography>Activate core slice on the operator side</Typography>
+                  <Typography>and handle devices 5G mobile traffic</Typography>
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                  <StyledTextField disabled={!isActivateCoreSliceMsActive()}
+                  <StyledTextField disabled={!isAnyCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label=""
@@ -542,13 +570,11 @@ function ConfigurationTab() {
                   />
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                  <Box sx={!isActivateCoreSliceMsActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
-                    <Typography>Deactivate core slice on the operator side </Typography>
-                    <Typography>and stop handling devices 5G mobile traffic</Typography>
-                  </Box>
+                  <Typography>Deactivate core slice on the operator side </Typography>
+                  <Typography>and stop handling devices 5G mobile traffic</Typography>
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                  <StyledTextField disabled={!isActivateCoreSliceMsActive()}
+                  <StyledTextField disabled={!isAnyCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label=""
@@ -561,13 +587,12 @@ function ConfigurationTab() {
                   />
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                  <Box sx={!isRerouteTrafficMsActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
-                    <Typography>Reroute traffic to if customer endpoint </Typography>
-                    <Typography>or sliced core is not reachable</Typography>
-                  </Box>
+                  <Typography>Route traffic as selected in fallback scenario</Typography>
+                  <Typography>if customer endpoint or sliced core</Typography>
+                  <Typography>is not reachable</Typography>
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                  <StyledTextField disabled={!isRerouteTrafficMsActive()}
+                  <StyledTextField disabled={!isAnyCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label=""
@@ -580,13 +605,11 @@ function ConfigurationTab() {
                   />
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                  <Box sx={!isRerouteTrafficMsActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
-                    <Typography>Reroute traffic back to customer endpoint </Typography>
-                    <Typography>or sliced core after recovery</Typography>
-                  </Box>
+                  <Typography>Reroute traffic back to customer endpoint </Typography>
+                  <Typography>or sliced core after recovery</Typography>
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                  <StyledTextField disabled={!isRerouteTrafficMsActive()}
+                  <StyledTextField disabled={!isAnyCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
                     label=""

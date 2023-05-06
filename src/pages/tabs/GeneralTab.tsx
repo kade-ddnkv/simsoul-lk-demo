@@ -3,9 +3,13 @@ import { Button, Grid, TextField, Tabs, Tab, Box, Typography, Divider, styled } 
 import { Radio, RadioGroup, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
 import { MyContext } from '@/context/myContext';
 import { HeaderText, StyledTextField } from '@/components/generalComponents';
+import SummaryTab from './SummaryTab';
 
-function GeneralTab({ explanation }) {
+type insidePage = 'create' | 'settings'
+
+function GeneralTab({ insidePage }: { insidePage: insidePage }) {
   const { sliceName, setSliceName } = useContext(MyContext)
+  const { sliceDescription, setSliceDescription } = useContext(MyContext)
 
   return (
     <Box
@@ -16,7 +20,7 @@ function GeneralTab({ explanation }) {
     >
       <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item xs={12} sx={{ mb: 1 }}>
-          <HeaderText>Configuration</HeaderText>
+          <HeaderText>General settings</HeaderText>
         </Grid>
         {/* <Grid item xs={12} sx={{ }} /> */}
         <Grid item xs={12} lg={2} sx={{ mt: 1 }}>
@@ -44,14 +48,15 @@ function GeneralTab({ explanation }) {
             size="small"
             label="Slice description"
             multiline
+            defaultValue={sliceDescription}
             onBlur={(event) => {
-              setSliceName(event.target.value)
+              setSliceDescription(event.target.value)
             }}
           />
         </Grid>
-        {explanation &&
+        {insidePage === 'create' &&
           <Grid item xs={12} lg={5} />}
-        {explanation &&
+        {insidePage === 'create' &&
           <Grid item xs={12} sx={{ mt: 3 }}>
             <Typography>In the following steps, you will need to select:</Typography>
             <Typography sx={{ mt: 1 }} />
@@ -62,6 +67,10 @@ function GeneralTab({ explanation }) {
             <Typography>- billing</Typography>
           </Grid>}
       </Grid>
+      {insidePage === 'settings' &&
+        <Box sx={{ mt: 5, mb: 2 }}>
+          <SummaryTab insidePage='settings' />
+        </Box>}
     </Box>
   )
 }

@@ -17,10 +17,10 @@ import TimeAndBillingTab from './TimeAndBillingTab';
 import SummaryTab from './SummaryTab';
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/database'
-import { useUser } from '@/auth/useUser';
 import { MyContext } from '@/context/myContext';
 import { useAuth } from '@/auth/authUserContext';
 import GeneralTab from './GeneralTab';
+import { exportShape } from '@/pages/tabs/GeographyTab';
 
 const StyledTab = styled(Tab)({
   ml: 4,
@@ -76,7 +76,7 @@ const ProceedButton = (props) => (
 function SubmitButton() {
   const { user } = useAuth()
 
-  const { sliceName } = useContext(MyContext)
+  const { sliceName, sliceDescription } = useContext(MyContext)
   const { selectedRadio,
     bandwidthWithPerSlice, numberOfDevicesWithPerSlice,
     bandwidthWithPerDevice, numberOfDevicesWithPerDevice,
@@ -85,15 +85,17 @@ function SubmitButton() {
     selectedTrafficWithOperator, selectedFallbackWithOperator,
     selectedDataCenterWithLocal, selectedTrafficWithLocal, selectedFallbackWithLocal,
     selectedTransferCore, selectedFallbackWithTransfer } = useContext(MyContext)
-  const { geographyType } = useContext(MyContext)
+  const { geographyType, country, shapesGeography } = useContext(MyContext)
   const { startDate, checkedEndDate, endDate } = useContext(MyContext)
   const { selectedBilling } = useContext(MyContext)
+  const { selectedImsi } = useContext(MyContext)
 
   const router = useRouter()
 
   function storeNewSlice() {
     let slice = {}
     slice.name = sliceName
+    slice.description = sliceDescription
     let numberOfDevices = 0
     let bandwidth = 0
     switch (selectedRadio) {
@@ -143,18 +145,28 @@ function SubmitButton() {
       dataCenter: dataCenter,
       traffic: traffic,
       fallback: fallback,
+      transferCore: transferCore,
     }
+    let shapes = shapesGeography.map(shape => JSON.stringify(exportShape(shape)))
     slice.geography = {
-      type: geographyType
+      type: geographyType,
+      country: country,
+      shapes: shapes,
     }
     slice.time = {
       startDate: startDate.toISOString(),
       endDate: checkedEndDate ? endDate.toISOString() : '',
     }
     slice.billing = selectedBilling
+    slice.configuration = {
+      imsi: {
+        type: selectedImsi
+      }
+    }
 
     firebase.database().ref('slices_preview/' + user?.id + '/' + sliceName).set(slice)
       .then(success => {
+        router.push('/')
       })
       .catch((error) => {
         console.error(error);
@@ -162,12 +174,7 @@ function SubmitButton() {
   }
 
   return (
-    <ProceedButton onClick={
-      () => {
-        storeNewSlice()
-        router.push('/')
-      }
-    }>Submit configuration</ProceedButton>
+    <ProceedButton onClick={storeNewSlice}>Submit configuration</ProceedButton>
   )
 }
 
@@ -260,7 +267,7 @@ export default function TabsCreate() {
           <TabPanel value='1'>
             {viewportHeight &&
               <Box sx={{ minHeight: viewportHeight, display: 'flex', flexDirection: 'column' }}>
-                <GeneralTab explanation={true} />
+                <GeneralTab insidePage='create' />
                 <ButtonsAtBottom />
               </Box>
             }
@@ -285,7 +292,7 @@ export default function TabsCreate() {
           </TabPanel>
           <TabPanel value='6'>
             <Box sx={{ minHeight: viewportHeight, display: 'flex', flexDirection: 'column' }}>
-              <SummaryTab />
+              <SummaryTab insidePage='create' />
               <ButtonsAtBottom proceedButton={<ProceedButton onClick={onProceedClick}>Create slice and proceed to slice configuration</ProceedButton>} />
             </Box>
           </TabPanel>

@@ -15,6 +15,26 @@ const theme = createTheme({
   typography: {
     fontFamily: customFont.style.fontFamily,
   },
+  // components: {
+  //   MuiSlider: {
+  //     styleOverrides: {
+  //       markLabel: {
+  //         transform: "translateX(-100%)"
+  //       },
+  //     },
+  //   }
+  // },
+  // components: {
+  //   MuiSlider: {
+  //     styleOverrides: {
+  //       thumb: {
+  //         '&$focused, &$activated, &$jumped, &:hover': {
+  //           boxShadow: 'none',
+  //         }
+  //       },
+  //     },
+  //   }
+  // },
 });
 
 
