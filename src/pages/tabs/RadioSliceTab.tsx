@@ -38,7 +38,7 @@ function RadioSliceTab() {
           <HeaderText>Radio slice</HeaderText>
         </Grid>
         <Grid item xs={12}>
-          <Typography>Select one of 4 options</Typography>
+          <Typography>Radio slice means virtualized part of radio access network. Please select one of the following options:</Typography>
         </Grid>
         <Grid item xs={12} lg={2} />
         <Grid item xs={12} lg={7}>
@@ -47,9 +47,9 @@ function RadioSliceTab() {
             value={selectedRadio}
             onChange={handleRadioChange}
           >
-            <FormControlLabel value="per_slice" control={<Radio style={{ color: 'black' }} />} label={<Typography sx={{ fontWeight: 'bold' }}>Bandwidth + Latency per slice</Typography>} />
+            <FormControlLabel value="per_slice" control={<Radio style={{ color: 'black' }} />} label={<Typography sx={{ fontWeight: 'bold' }}>Bandwidth & Latency per slice</Typography>} />
             <BoxInsideRadio>
-              <Typography>I want guaranteed bandwidth to all my devices.</Typography>
+              <Typography>Shared bandwidth and latency for all mobile devices inside the slice.</Typography>
               <Box sx={selectedRadio !== 'per_slice' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
                 <Box>
                   <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
@@ -91,9 +91,9 @@ function RadioSliceTab() {
                 </Box>
               </Box>
             </BoxInsideRadio>
-            <FormControlLabel value="per_device" control={<Radio style={{ color: 'black' }} />} label={<Typography sx={{ fontWeight: 'bold' }}>Bandwidth + Latency per device</Typography>} />
+            <FormControlLabel value="per_device" control={<Radio style={{ color: 'black' }} />} label={<Typography sx={{ fontWeight: 'bold' }}>Bandwidth & Latency per device</Typography>} />
             <BoxInsideRadio>
-              <Typography>I want guaranteed bandwidth and latency for each of my devices.</Typography>
+              <Typography>Guaranteed bandwidth and latency for every mobile devices inside the slice.</Typography>
               <Box sx={selectedRadio !== 'per_device' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
                 <Box>
                   <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
@@ -135,9 +135,9 @@ function RadioSliceTab() {
                 </Box>
               </Box>
             </BoxInsideRadio>
-            <FormControlLabel value="density" control={<Radio style={{ color: 'black' }} />} label={<Typography sx={{ fontWeight: 'bold' }}>Density</Typography>} />
+            <FormControlLabel value="density" control={<Radio style={{ color: 'black' }} />} label={<Typography sx={{ fontWeight: 'bold' }}>High density slice</Typography>} />
             <BoxInsideRadio>
-              <Typography>I want to connect large number of devices with minimal traffic and interactions (MIIoT etc).</Typography>
+              <Typography>This type of slice should be userd to provide connectivity for large number of devices with minimal traffic and interactions (like massive IIoT sensors etc).</Typography>
               <Box sx={selectedRadio !== 'density' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
                 <Box>
                   <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
@@ -188,6 +188,9 @@ function RadioSliceTab() {
             <FormControlLabel value="nothing" control={<Radio style={{ color: 'black' }} />} label={
               <Typography sx={{ fontWeight: 'bold' }}>I don't need a radio slice</Typography>
             } />
+              <BoxInsideRadio>
+              <Typography>Please select this option if you don't have any specific requirements for the bandwidth and latency. And you just need to manage your device's mobile data traffic before or instead of the routing to the public network (internet).</Typography>
+                </BosInsideRadio>
           </RadioGroup>
         </Grid>
       </Grid>
