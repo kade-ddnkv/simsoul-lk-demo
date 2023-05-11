@@ -17,7 +17,7 @@ export default function infoPage() {
 
   return (
     <Container maxWidth='xl' sx={{ mt: 2 }}>
-      <Header mainText='simsoul 5G slicing demo' noLine useHomeButton={false} isBold={false} />
+      <Header mainText='Customer selfcare demo of the 5G slicing functions' noLine useHomeButton={false} isBold={false} />
       <Container maxWidth='md' sx={{ mt: 2 }}>
         <Typography sx={{ fontWeight: 'bold', fontSize: '1.8rem', mt: 6, mb: 6, ml: 2 }}>The purpose of this demo</Typography>
         <Box sx={{ border: 1, pl: 3, pr: 8, py: 5, mb: 8 }}>

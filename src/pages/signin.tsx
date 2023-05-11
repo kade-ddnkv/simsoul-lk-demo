@@ -28,7 +28,7 @@ export default function SignIn() {
   return (
     <>
       <Container maxWidth='xl' sx={{ mt: 2 }}>
-        <Header mainText='simsoul 5G slicing demo' noLine noRight useHomeButton={false} isBold={false} />
+        <Header mainText='Customer selfcare demo of the 5G slicing functions' noLine noRight useHomeButton={false} isBold={false} />
       </Container>
       <Container maxWidth='xs' sx={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Box component='form' autoComplete='off' onSubmit={onSubmit} sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

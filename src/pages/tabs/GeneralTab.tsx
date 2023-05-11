@@ -58,13 +58,13 @@ function GeneralTab({ insidePage }: { insidePage: insidePage }) {
           <Grid item xs={12} lg={5} />}
         {insidePage === 'create' &&
           <Grid item xs={12} sx={{ mt: 3 }}>
-            <Typography>In the following steps, you will need to select:</Typography>
+            <Typography>During the next steps you   will need to select:</Typography>
             <Typography sx={{ mt: 1 }} />
-            <Typography>- radio slice type</Typography>
-            <Typography>- core slice type</Typography>
-            <Typography>- location of the slice</Typography>
-            <Typography>- time of work</Typography>
-            <Typography>- billing</Typography>
+            <Typography>- 5G radio slice type - to let network know how your devices should be served</Typography>
+            <Typography>- 5G core slice type - to let network know how you want your device's traffic to be managed</Typography>
+            <Typography>- geolocation of the slice - to let network know in which areas you need your private 5G network slice (spot on the map, area or country-wide)</Typography>
+            <Typography>- to align schedule - when your slice should be started and (optionally) stopped </Typography>
+            <Typography>- billing selection</Typography>
           </Grid>}
       </Grid>
       {insidePage === 'settings' &&

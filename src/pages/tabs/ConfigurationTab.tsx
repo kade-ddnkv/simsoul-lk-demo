@@ -176,13 +176,13 @@ function ConfigurationTab() {
             <HeaderText>Device attachment to the slice</HeaderText>
           </Grid>
           <Grid item xs={12} sx={{ mb: 2 }}>
-            <Typography>Click the button to send a command to attach devices to the slice.</Typography>
+            <Typography>Click the button to send a command to attach devices to the slice based on the list of the device ID (IMSI) above.</Typography>
           </Grid>
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
             <BoxInsideRadio sx={{ ml: 0 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <StyledButton variant='outlined'>Send</StyledButton>
+                <StyledButton variant='outlined'>Send attach command</StyledButton>
                 <Typography sx={{ ml: 3 }}>Last command sent on 2023.04.15 17:01:15</Typography>
               </Box>
             </BoxInsideRadio>
@@ -198,7 +198,7 @@ function ConfigurationTab() {
             <Box sx={!isAnyRadioActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
               <Typography>There is no separate configuration for the radio slice except options you selected on the radio slice page.</Typography>
               <Typography>Please note that if you want to route traffic of your mobile devices to your local facility, you need to activate core slice in addition to your radio slice.</Typography>
-              <Typography sx={{ mt: 2 }}>You can access the list of the 5G base stations that is configured for security or some other reason.</Typography>
+              <Typography sx={{ mt: 2 }}>You can access the list of the 5G base stations that serves your radio slice. It can be useful for security or some other configuration reasons.</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} lg={3} />
@@ -207,7 +207,7 @@ function ConfigurationTab() {
             <BoxInsideRadio sx={{ ml: 0 }}>
               <Stack direction='row' spacing={2}>
                 <StyledButton variant='outlined' disabled={!isAnyRadioActive()}>Download</StyledButton>
-                <StyledButton variant='outlined' disabled={!isAnyRadioActive()}>Access via API</StyledButton>
+                <StyledButton variant='outlined' disabled={!isAnyRadioActive()}>Access the list via API</StyledButton>
               </Stack>
             </BoxInsideRadio>
           </Grid>
@@ -224,7 +224,7 @@ function ConfigurationTab() {
             <HeaderText>Primary VPN configuration</HeaderText>
           </Grid>
           <Grid item xs={12}>
-            <Typography>This VPN will be used to exchange traffic between 5G devices and your local resources.</Typography>
+            <Typography>This VPN will be used as primary link to exchange traffic between your mobile devices and your local resources.</Typography>
           </Grid>
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
@@ -237,7 +237,7 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP address"
+                    label="Enter IP address"
                     defaultValue=""
                     variant="outlined"
                   />
@@ -249,7 +249,7 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="VPN public key"
+                    label="Enter VPN public key"
                     defaultValue=""
                     variant="outlined"
                   />
@@ -350,7 +350,7 @@ function ConfigurationTab() {
             <HeaderText>Secondary VPN configuration</HeaderText>
           </Grid>
           <Grid item xs={12}>
-            <Typography>This VPN will be used to exchange traffic between 5G devices and your local resources.</Typography>
+            <Typography>This VPN will be used as backup link to exchange traffic between your mobile devices and your local resources.</Typography>
           </Grid>
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
@@ -363,7 +363,7 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isSecondaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP address"
+                    label="Enter IP address"
                     defaultValue=""
                     variant="outlined"
                   />
@@ -375,7 +375,7 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isSecondaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="VPN public key"
+                    label="Enter VPN public key"
                     defaultValue=""
                     variant="outlined"
                   />
@@ -434,7 +434,7 @@ function ConfigurationTab() {
             <HeaderText>5G core functions configuration - core slice on operator premises</HeaderText>
           </Grid>
           <Grid item xs={12}>
-            <Typography>This IP address will be used to send mobile device traffic to you local resources.</Typography>
+            <Typography>If you selected 5G core slice on the MNO premices or specific DC, traffic of your mobile device will be routed from this IP adresses.</Typography>
           </Grid>
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
@@ -491,10 +491,10 @@ function ConfigurationTab() {
       <Box sx={!isN3N4InterfaceActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12} sx={{ mt: 2 }}>
-            <HeaderText>5G core functions configuration - UPF on customer premises</HeaderText>
+            <HeaderText>5G core functions configuration - slice on customer premises and under customer control</HeaderText>
           </Grid>
           <Grid item xs={12}>
-            <Typography>You will need this IP address and secrets to connect 5G core functions like UPF to operator core.</Typography>
+            <Typography>You will need this IP address and secrets to connect your local 5G core functions to the MNO core.</Typography>
           </Grid>
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
@@ -508,7 +508,7 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isN3N4InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP address"
+                    label="Enter IP address"
                     defaultValue=""
                     variant="outlined"
                   />
@@ -521,7 +521,7 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isN3N4InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP address"
+                    label="Enter IP address"
                     defaultValue=""
                     variant="outlined"
                   />
@@ -534,7 +534,7 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isN3N4InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP address"
+                    label="Enter IP address"
                     defaultValue=""
                     variant="outlined"
                   />
@@ -547,7 +547,7 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isN3N4InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP address"
+                    label="Enter IP address"
                     defaultValue=""
                     variant="outlined"
                   />
@@ -605,16 +605,16 @@ function ConfigurationTab() {
       <Box sx={!isDownloadConfigurationsActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12} sx={{ mt: 2, mb: 2 }}>
-            <HeaderText>5G core functions configuration - core slice on customer premises</HeaderText>
+            <HeaderText>5G core functions configuration - slice on customer premises and under customer control</HeaderText>
           </Grid>
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
             <Stack spacing={2}>
               <StyledButton variant='outlined' disabled={!isDownloadConfigurationsActive()}>
-                Download containers and configurations of the operator supplied 3GPP core
+                Download kubernetes containers, configurations and deploy charts of the 3GPP core supplied by MNO
               </StyledButton>
               <StyledButton variant='outlined' disabled={!isDownloadConfigurationsActive()}>
-                Download configuration and secrets to use your own 3GPP compatible 5G core
+                Download configurations and secrets to use with your own 3GPP compatible 5G core
               </StyledButton>
             </Stack>
           </Grid>
@@ -624,10 +624,10 @@ function ConfigurationTab() {
       <Box sx={!isAnyCoreActive() ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12} sx={{ mt: 2 }}>
-            <HeaderText>5G core functions configuration - UPF on customer premises</HeaderText>
+            <HeaderText>5G core functions configuration - fallback timeouts</HeaderText>
           </Grid>
           <Grid item xs={12}>
-            <Typography>You will need this IP address and secrets to connect 5G core functions like UPF to operator core.</Typography>
+            <Typography>You can overide change preset timeouts that is used to activate fallback scenarios</Typography>
           </Grid>
           <Grid item xs={12} lg={2} />
           <Grid item xs={12} lg={7}>
@@ -641,7 +641,7 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isAnyCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="Ms"
+                    label="milliseconds"
                     defaultValue="100"
                     variant="outlined"
                     type='number'
@@ -658,7 +658,7 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isAnyCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="Ms"
+                    label="milliseconds"
                     defaultValue="100"
                     variant="outlined"
                     type='number'
@@ -676,7 +676,7 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isAnyCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="Ms"
+                    label="milliseconds"
                     defaultValue="100"
                     variant="outlined"
                     type='number'
@@ -693,7 +693,7 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isAnyCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="Ms"
+                    label="milliseconds"
                     defaultValue="100"
                     variant="outlined"
                     type='number'

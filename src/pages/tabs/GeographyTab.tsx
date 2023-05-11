@@ -294,12 +294,12 @@ const RadioButtonsGeographyType = () => {
         <FormControlLabel value="point" sx={{ mt: 0 }} control={
           <Radio style={{ color: 'black' }} />
         } label={
-          <Typography>particular point, building</Typography>
+          <Typography>particular point, building (use markers in the upper right corner of the map to set the point)</Typography>
         } />
         <FormControlLabel value="region" control={
           <Radio style={{ color: 'black' }} />
         } label={
-          <Typography>selected region on the map</Typography>
+          <Typography>selected region on the map (use markers in the upper right corner of the map to set the range)</Typography>
         } />
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <FormControlLabel value="country" control={
@@ -338,12 +338,12 @@ function GeographyTab() {
   const Wrapper = ({ children }) => (
     <Grid container sx={{ width: '100%' }} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
       <Grid item xs={12}>
-        <HeaderText>Slice geography</HeaderText>
+        <HeaderText>Geography of the slice</HeaderText>
       </Grid>
       <Grid item xs={12} lg={9}>
         <Grid container columnSpacing={1}>
           <Grid item xs={12} lg={3} sx={{ mt: 1 }}>
-            <Typography>Select one of 3 options:</Typography>
+            <Typography>Select the option:</Typography>
           </Grid>
           <Grid item xs={12} lg={9} sx={{ pb: 1 }}>
             <RadioButtonsGeographyType />
