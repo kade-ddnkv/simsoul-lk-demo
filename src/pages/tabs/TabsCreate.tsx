@@ -227,19 +227,6 @@ export default function TabsCreate() {
     </Box>
   )
 
-  const [viewportHeight, setViewportHeight] = useState<number>();
-
-  React.useEffect(() => {
-    setViewportHeight(window.innerHeight - 2 - 8 - 36.5 - 16 - 32 - 16 - 10)
-    function handleResize() {
-      setViewportHeight(window.innerHeight - 2 - 8 - 36.5 - 16 - 32 - 16 - 10);
-    }
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
   return (
     <Box
       sx={{ flexGrow: 1, display: 'flex' }}
@@ -265,12 +252,9 @@ export default function TabsCreate() {
         </TabList>
         <Box sx={{ flexGrow: 1 }}>
           <TabPanel value='1'>
-            {viewportHeight &&
-              <Box sx={{ minHeight: viewportHeight, display: 'flex', flexDirection: 'column' }}>
-                <GeneralTab insidePage='create' />
-                <ButtonsAtBottom />
-              </Box>
-            }
+            <GeneralTab insidePage='create' />
+            <Box sx={{ mb: 6 }} />
+            <ButtonsAtBottom />
           </TabPanel>
           <TabPanel value='2'>
             <RadioSliceTab />
@@ -285,16 +269,14 @@ export default function TabsCreate() {
             <ButtonsAtBottom />
           </TabPanel>
           <TabPanel value='5'>
-            <Box sx={{ minHeight: viewportHeight, display: 'flex', flexDirection: 'column' }}>
-              <TimeAndBillingTab />
-              <ButtonsAtBottom />
-            </Box>
+            <TimeAndBillingTab />
+            <Box sx={{ mb: 7 }} />
+            <ButtonsAtBottom />
           </TabPanel>
           <TabPanel value='6'>
-            <Box sx={{ minHeight: viewportHeight, display: 'flex', flexDirection: 'column' }}>
-              <SummaryTab insidePage='create' />
-              <ButtonsAtBottom proceedButton={<ProceedButton onClick={onProceedClick}>Create slice and proceed to slice configuration</ProceedButton>} />
-            </Box>
+            <SummaryTab insidePage='create' />
+            <Box sx={{ mb: 6 }} />
+            <ButtonsAtBottom proceedButton={<ProceedButton onClick={onProceedClick}>Create slice and proceed to slice configuration</ProceedButton>} />
           </TabPanel>
           <TabPanel value='7'>
             <ConfigurationTab />

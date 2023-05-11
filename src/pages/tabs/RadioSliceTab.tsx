@@ -37,7 +37,7 @@ function RadioSliceTab() {
         <Grid item xs={12}>
           <HeaderText>Radio slice</HeaderText>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sx={{ mb: 3 }}>
           <Typography>Radio slice means virtualized part of radio access network. Please select one of the following options:</Typography>
         </Grid>
         <Grid item xs={12} lg={2} />
@@ -188,9 +188,9 @@ function RadioSliceTab() {
             <FormControlLabel value="nothing" control={<Radio style={{ color: 'black' }} />} label={
               <Typography sx={{ fontWeight: 'bold' }}>I don't need a radio slice</Typography>
             } />
-              <BoxInsideRadio>
+            <BoxInsideRadio>
               <Typography>Please select this option if you don't have any specific requirements for the bandwidth and latency. And you just need to manage your device's mobile data traffic before or instead of the routing to the public network (internet).</Typography>
-                </BosInsideRadio>
+            </BoxInsideRadio>
           </RadioGroup>
         </Grid>
       </Grid>

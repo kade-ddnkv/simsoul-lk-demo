@@ -39,7 +39,10 @@ export default function LeaveFeedback() {
       <Container maxWidth='lg' sx={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
         <Stack component={Container} spacing={2} sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
           <Container maxWidth='xs' sx={{ display: 'flex', alignItems: 'center' }}>
-            <HeaderText sx={{ ml: 'auto', mr: 'auto' }}>Please leave your feedback about this 5G slicing selfcare demo</HeaderText>
+            <Box sx={{ ml: 'auto', mr: 'auto', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+              <HeaderText>Please leave your feedback</HeaderText>
+              <HeaderText>about this 5G slicing selfcare demo</HeaderText>
+            </Box>
           </Container>
           <Container maxWidth={false} style={{ maxWidth: '750px' }} sx={{ display: 'flex', alignItems: 'center' }}>
             <StyledTextField
