@@ -13,7 +13,7 @@ import { MyContext } from '@/context/myContext';
 function RadioSliceTab() {
   const { selectedRadio, setSelectedRadio } = useContext(MyContext);
   const { bandwidthWithPerSlice, setBandwidthWithPerSlice } = useContext(MyContext);
-  const { numberOfDevicesWithPerSlice } = useContext(MyContext);
+  const { numberOfDevicesWithPerSlice, setNumberOfDevicesWithPerSlice } = useContext(MyContext);
   const { bandwidthWithPerDevice, setBandwidthWithPerDevice } = useContext(MyContext);
   const { numberOfDevicesWithPerDevice, setNumberOfDevicesWithPerDevice } = useContext(MyContext);
   const { bandwidthWithDensity, setBandwidthWithDensity } = useContext(MyContext);
@@ -77,13 +77,14 @@ function RadioSliceTab() {
                       <Typography>Max number of devices (estimated)</Typography>
                     </Grid>
                     <Grid item xs={12} lg={4}>
-                      <StyledTextField disabled
+                      <StyledTextField disabled={selectedRadio !== 'per_slice'}
                         sx={{ width: '100%' }}
                         size="small"
                         label="Number of devices"
                         defaultValue={numberOfDevicesWithPerSlice}
                         variant="outlined"
                         type='number'
+                        onBlur={(event) => setNumberOfDevicesWithPerSlice(event.target.value)}
                       />
                     </Grid>
                   </Grid>

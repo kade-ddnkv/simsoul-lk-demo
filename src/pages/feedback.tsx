@@ -9,19 +9,21 @@ import Header from '@/components/header';
 import axios from 'axios';
 import { GetServerSidePropsContext } from 'next'
 import { serverSideAuthCheck } from '@/auth/serverSideAuthCheck'
+import { useAuth } from '@/auth/authUserContext'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return serverSideAuthCheck(context)
 }
 
 export default function LeaveFeedback() {
+  const { user } = useAuth()
   const [feedbackText, setFeedbackText] = useState('')
 
   const postFeedbackToEmail = async () => {
     try {
       const response = await axios.post('/api/sendEmail', {
         subject: 'Feedback on simsoul-lk-demo',
-        message: feedbackText,
+        message: feedbackText + '\n\n-------------------------\n\nfrom user: ' + user.email,
       });
       console.log(response.data.message);
     } catch (error) {

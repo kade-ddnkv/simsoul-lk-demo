@@ -59,7 +59,10 @@ const StyledTextField = styled(TextField)({
 })
 
 const ReadOnlyStyledTextField = styled(StyledTextField)({
-  input: { color: alpha('#000000', 0.6) }
+  input: { color: alpha('#000000', 0.6) },
+  '& > div': {
+    paddingRight: 0
+  }
 })
 
 const BoxInsideRadio = styled(Box)({

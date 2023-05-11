@@ -157,19 +157,6 @@ export default function TabsSettings() {
     setTabValue(newTabValue);
   };
 
-  const [viewportHeight, setViewportHeight] = useState<number>();
-
-  React.useEffect(() => {
-    setViewportHeight(window.innerHeight - 2 - 8 - 36.5 - 16 - 32 - 16 - 10)
-    function handleResize() {
-      setViewportHeight(window.innerHeight - 2 - 8 - 36.5 - 16 - 32 - 16 - 10);
-    }
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
   return (
     <Box
       sx={{ flexGrow: 1, display: 'flex' }}
@@ -195,17 +182,13 @@ export default function TabsSettings() {
           <SaveButton />
           <StyledTab disabled sx={{ mt: 4 }} label="Analytics & reports" />
           <StyledTab label="Analytics 1" value='7' />
-          <StyledTab label="Analytics 2" value='8' />
-          <StyledTab label="Analytics 3" value='9' />
         </TabList>
         <Box sx={{ flexGrow: 1 }}>
           <TabPanel value='1'>
-            {viewportHeight &&
-              <Box sx={{ minHeight: viewportHeight, display: 'flex', flexDirection: 'column' }}>
-                <GeneralTab insidePage='settings' />
-                <DeleteSliceButton />
-              </Box>
-            }
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <GeneralTab insidePage='settings' />
+              <DeleteSliceButton />
+            </Box>
           </TabPanel>
           <TabPanel value='2'>
             <RadioSliceTab />
@@ -224,12 +207,6 @@ export default function TabsSettings() {
           </TabPanel>
           <TabPanel value='7'>
             <AnalyticsFirstTab />
-          </TabPanel>
-          <TabPanel value='8'>
-            Analytics 2
-          </TabPanel>
-          <TabPanel value='9'>
-            Analytics 3
           </TabPanel>
         </Box>
       </TabContext>

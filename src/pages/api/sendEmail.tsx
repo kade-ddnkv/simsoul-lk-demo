@@ -1,21 +1,22 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 const nodemailer = require('nodemailer');
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const { subject, message } = req.body;
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: process.env.SMTP_HOST,
+      secure: true,
       auth: {
-        user: process.env.EMAIL_ADDRESS,
-        pass: process.env.EMAIL_PASSWORD,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
       }
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_ADDRESS,
-      to: process.env.EMAIL_RECEIVER_ADDRESS,
+      from: process.env.SMTP_USER,
+      to: process.env.SMTP_USER,
       subject: subject,
       text: message
     };

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Button, Stack, Grid, TextField, Tabs, Tab, Box, Typography, Divider, styled } from '@mui/material';
-import { Radio, RadioGroup, MenuItem, FormControlLabel, Checkbox, InputAdornment } from '@mui/material';
+import { Radio, RadioGroup, MenuItem, FormControlLabel, Checkbox, InputAdornment, IconButton } from '@mui/material';
 import CheckBoxOutlineBlankSharpIcon from '@mui/icons-material/CheckBoxOutlineBlankSharp';
 import CheckBoxSharpIcon from '@mui/icons-material/CheckBoxSharp';
 import { useMediaQuery, useTheme } from '@mui/material';
@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import Geography from '@/pages/tabs/GeographyTab';
 import { HeaderText, StyledButton, StyledTextField, ReadOnlyStyledTextField, BoxInsideRadio } from '@/components/generalComponents';
 import { MyContext } from '@/context/myContext';
+import ContentCopySharpIcon from '@mui/icons-material/ContentCopySharp';
 
 function ConfigurationTab() {
   const { selectedCore } = useContext(MyContext)
@@ -260,10 +261,18 @@ function ConfigurationTab() {
                   <ReadOnlyStyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP address"
+                    label="IP address (copy)"
                     defaultValue="12.34.56.78"
                     variant="outlined"
-                    InputProps={{ readOnly: true, }}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment:
+                        <InputAdornment position='end'>
+                          <IconButton disableRipple disabled={!isPrimaryVpnActive()}>
+                            <ContentCopySharpIcon />
+                          </IconButton>
+                        </InputAdornment>
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} lg={4}>
@@ -273,10 +282,18 @@ function ConfigurationTab() {
                   <ReadOnlyStyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="VPN public key"
+                    label="VPN public key (copy)"
                     defaultValue="mjD_ObsTlRU8L-qnD4OeCmyliHIB3MHg="
                     variant="outlined"
-                    InputProps={{ readOnly: true, }}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment:
+                        <InputAdornment position='end'>
+                          <IconButton disableRipple disabled={!isPrimaryVpnActive()}>
+                            <ContentCopySharpIcon />
+                          </IconButton>
+                        </InputAdornment>
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} lg={4}>
@@ -286,10 +303,18 @@ function ConfigurationTab() {
                   <ReadOnlyStyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP subnet"
+                    label="IP subnet (copy)"
                     defaultValue="10.0.0.0/8"
                     variant="outlined"
-                    InputProps={{ readOnly: true, }}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment:
+                        <InputAdornment position='end'>
+                          <IconButton disableRipple disabled={!isPrimaryVpnActive()}>
+                            <ContentCopySharpIcon />
+                          </IconButton>
+                        </InputAdornment>
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} lg={4}>
@@ -299,10 +324,18 @@ function ConfigurationTab() {
                   <ReadOnlyStyledTextField disabled={!isPrimaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP subnet"
+                    label="IP subnet (copy)"
                     defaultValue="172.17.17.0/24"
                     variant="outlined"
-                    InputProps={{ readOnly: true, }}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment:
+                        <InputAdornment position='end'>
+                          <IconButton disableRipple disabled={!isPrimaryVpnActive()}>
+                            <ContentCopySharpIcon />
+                          </IconButton>
+                        </InputAdornment>
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -354,10 +387,18 @@ function ConfigurationTab() {
                   <ReadOnlyStyledTextField disabled={!isSecondaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP address"
+                    label="IP address (copy)"
                     defaultValue="12.34.67.89"
                     variant="outlined"
-                    InputProps={{ readOnly: true, }}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment:
+                        <InputAdornment position='end'>
+                          <IconButton disableRipple disabled={!isSecondaryVpnActive()}>
+                            <ContentCopySharpIcon />
+                          </IconButton>
+                        </InputAdornment>
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} lg={4}>
@@ -367,10 +408,18 @@ function ConfigurationTab() {
                   <ReadOnlyStyledTextField disabled={!isSecondaryVpnActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="VPN public key"
+                    label="VPN public key (copy)"
                     defaultValue="mrJP08FDyGK1+9sqRgv5T/38TYNIH4ZR="
                     variant="outlined"
-                    InputProps={{ readOnly: true, }}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment:
+                        <InputAdornment position='end'>
+                          <IconButton disableRipple disabled={!isSecondaryVpnActive()}>
+                            <ContentCopySharpIcon />
+                          </IconButton>
+                        </InputAdornment>
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -398,10 +447,18 @@ function ConfigurationTab() {
                   <ReadOnlyStyledTextField disabled={!isN6InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP address"
+                    label="IP address (copy)"
                     defaultValue="172.17.17.21"
                     variant="outlined"
-                    InputProps={{ readOnly: true, }}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment:
+                        <InputAdornment position='end'>
+                          <IconButton disableRipple disabled={!isN6InterfaceActive()}>
+                            <ContentCopySharpIcon />
+                          </IconButton>
+                        </InputAdornment>
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} lg={4}>
@@ -411,10 +468,18 @@ function ConfigurationTab() {
                   <ReadOnlyStyledTextField disabled={!isN6InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP address"
+                    label="IP address (copy)"
                     defaultValue="172.17.17.22"
                     variant="outlined"
-                    InputProps={{ readOnly: true, }}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment:
+                        <InputAdornment position='end'>
+                          <IconButton disableRipple disabled={!isN6InterfaceActive()}>
+                            <ContentCopySharpIcon />
+                          </IconButton>
+                        </InputAdornment>
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -495,10 +560,18 @@ function ConfigurationTab() {
                   <ReadOnlyStyledTextField disabled={!isN3N4InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP address"
+                    label="IP address (copy)"
                     defaultValue="172.17.17.31"
                     variant="outlined"
-                    InputProps={{ readOnly: true, }}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment:
+                        <InputAdornment position='end'>
+                          <IconButton disableRipple disabled={!isN3N4InterfaceActive()}>
+                            <ContentCopySharpIcon />
+                          </IconButton>
+                        </InputAdornment>
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} lg={5}>
@@ -509,10 +582,18 @@ function ConfigurationTab() {
                   <ReadOnlyStyledTextField disabled={!isN3N4InterfaceActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label="IP address"
+                    label="IP address (copy)"
                     defaultValue="172.17.17.32"
                     variant="outlined"
-                    InputProps={{ readOnly: true, }}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment:
+                        <InputAdornment position='end'>
+                          <IconButton disableRipple disabled={!isN3N4InterfaceActive()}>
+                            <ContentCopySharpIcon />
+                          </IconButton>
+                        </InputAdornment>
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -560,8 +641,8 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isAnyCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label=""
-                    defaultValue=""
+                    label="Ms"
+                    defaultValue="100"
                     variant="outlined"
                     type='number'
                     InputProps={{
@@ -577,8 +658,8 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isAnyCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label=""
-                    defaultValue=""
+                    label="Ms"
+                    defaultValue="100"
                     variant="outlined"
                     type='number'
                     InputProps={{
@@ -595,8 +676,8 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isAnyCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label=""
-                    defaultValue=""
+                    label="Ms"
+                    defaultValue="100"
                     variant="outlined"
                     type='number'
                     InputProps={{
@@ -612,8 +693,8 @@ function ConfigurationTab() {
                   <StyledTextField disabled={!isAnyCoreActive()}
                     sx={{ width: '100%' }}
                     size="small"
-                    label=""
-                    defaultValue=""
+                    label="Ms"
+                    defaultValue="100"
                     variant="outlined"
                     type='number'
                     InputProps={{
