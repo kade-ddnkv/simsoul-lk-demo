@@ -41,7 +41,7 @@ const generateData = () => {
   return labels.map(() => faker.datatype.number({ min: 0, max: 3000 }))
 }
 
-const title = 'Number of active devices on network'
+const title = 'Number of active device inside the slice'
 
 export const data = {
   labels,
