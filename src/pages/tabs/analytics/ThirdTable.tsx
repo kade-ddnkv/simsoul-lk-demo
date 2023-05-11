@@ -166,25 +166,25 @@ function ThirdTable() {
 
   return (
     <Box sx={{ mt: 10, mb: 8 }}>
-      <HeaderText>Top 10 list of the most active devices</HeaderText>
+      <HeaderText>Top 10 most active devices</HeaderText>
       <Paper sx={{ mt: 2, mx: 'auto', borderRadius: 0, borderBottom: 0 }} variant='outlined' elevation={0}>
         <Table>
           <TableHead>
             <TableRow>
               <StyledTableCell>#</StyledTableCell>
-              <StyledTableCell align="right">IMSI</StyledTableCell>
-              <StyledTableCell align="right">IMEI</StyledTableCell>
-              <StyledTableCell align="right">Traffic volume</StyledTableCell>
-              <StyledTableCell align="right">Traffic peak
+              <StyledTableCell align="center">IMSI</StyledTableCell>
+              <StyledTableCell align="center">IMEI</StyledTableCell>
+              <StyledTableCell align="center">Traffic volume</StyledTableCell>
+              <StyledTableCell align="center">Traffic peak
                 <Box sx={{ fontWeight: 'normal' }}>(average per 5 second)</Box>
               </StyledTableCell>
-              <StyledTableCell align="right">Network latency
+              <StyledTableCell align="center">Network latency
                 <Box sx={{ fontWeight: 'normal' }}>(UPF to device)</Box>
               </StyledTableCell>
-              <StyledTableCell align="right">Last location change
+              <StyledTableCell align="center">Last location change
                 <Box sx={{ fontWeight: 'normal' }}>(NCGI, geo, gmt date/time)</Box>
               </StyledTableCell>
-              <StyledTableCell align="right">Last active state
+              <StyledTableCell align="center">Last active state
                 <Box sx={{ fontWeight: 'normal' }}>(GMT date/time)</Box>
               </StyledTableCell>
             </TableRow>
