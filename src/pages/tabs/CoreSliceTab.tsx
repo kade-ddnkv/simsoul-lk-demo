@@ -85,10 +85,10 @@ function CoreSliceTab() {
             onChange={handleCoreChange}
           >
             <FormControlLabel value="operator" control={<Radio style={{ color: 'black' }} />} label={
-              <Typography sx={{ fontWeight: 'bold' }}>Allocated resources on the operator's side, under the operator's control.</Typography>
+              <Typography sx={{ fontWeight: 'bold' }}>Core slice on the MNO side and under MNO control.</Typography>
             } />
             <BoxInsideRadio>
-              <Typography>I just need core slice to control my traffic.</Typography>
+              <Typography>Allocated virtualized mobile network resources (functions) on the mobile operator side. This option is fine if you I just need to control your traffic like routing it to your VPN.</Typography>
               <Box sx={selectedCore !== 'operator' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
                 <Grid container rowSpacing={2} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
                   <Grid item xs={12} lg={2} />
@@ -285,10 +285,10 @@ function CoreSliceTab() {
               </Box>
             </BoxInsideRadio> */}
             <FormControlLabel value="local" control={<Radio style={{ color: 'black' }} />} label={
-              <Typography sx={{ fontWeight: 'bold' }}>Allocated resources in the local (operator's) data center.</Typography>
+              <Typography sx={{ fontWeight: 'bold' }}>Core slice inside local data center and under MNO control.</Typography>
             } />
             <BoxInsideRadio>
-              <Typography>I want my slice resources to be located in the selected data center to reduce latency or provide higher connectivity speed.</Typography>
+              <Typography>This option allows you to transfer specific mobile network resources (functions) to the nearest data center and let your mobile network operator to manage and control this slice. It can be used to reduce latency or provide higher connectivity speed.</Typography>
               <Box sx={selectedCore !== 'local' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
                 <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
                   <Grid item xs={12} lg={2} />
@@ -372,10 +372,10 @@ function CoreSliceTab() {
               </Box>
             </BoxInsideRadio>
             <FormControlLabel value="transfer" control={<Radio style={{ color: 'black' }} />} label={
-              <Typography sx={{ fontWeight: 'bold' }}>Transfer some core resources to the my local platform.</Typography>
+              <Typography sx={{ fontWeight: 'bold' }}>Core slice for installation on customer facility and under customer control.</Typography>
             } />
             <BoxInsideRadio>
-              <Typography>I want full control over core slice for security or some other reasons, I want to run core on premices.</Typography>
+              <Typography>This option should be used if you want to get your mobile data traffic right inside your local facility. The set of the requred functions like UPF and SMF will be under your full control with this slice. This core slice option can be used if you have specific security requirements or need ultra low latency for your connections. </Typography>
               <Box sx={selectedCore !== 'transfer' ? { '& .MuiTypography-root': { color: alpha('#000000', 0.38) } } : {}}>
                 <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ mt: 1 }}>
                   <Grid item xs={12} lg={2} />
@@ -438,6 +438,9 @@ function CoreSliceTab() {
             <FormControlLabel value="nothing" control={<Radio style={{ color: 'black' }} />} label={
               <Typography sx={{ fontWeight: 'bold' }}>I don't need a core slice</Typography>
             } />
+            <BoxInsideRadio>
+              <Typography>This option should be used if you selected some radio slice to guarantee connectivity (like slice for high density) but don't need to control your traffic on the border of MNO.</Typography>
+            </BoxInsideRadio>
           </RadioGroup>
         </Grid>
       </Grid>
