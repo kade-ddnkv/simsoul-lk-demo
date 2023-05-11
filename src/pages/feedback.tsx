@@ -34,12 +34,12 @@ export default function LeaveFeedback() {
   return (
     <>
       <Container maxWidth='xl' sx={{ mt: 2 }}>
-        <Header mainText='simsoul 5G slicing demo' noLine useHomeButton={true} isBold={false} />
+        <Header mainText='Customer selfcare demo of the 5G slicing functions' noLine useHomeButton={true} isBold={false} />
       </Container>
       <Container maxWidth='lg' sx={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
         <Stack component={Container} spacing={2} sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
           <Container maxWidth='xs' sx={{ display: 'flex', alignItems: 'center' }}>
-            <HeaderText sx={{ ml: 'auto', mr: 'auto' }}>Your feedback on demo</HeaderText>
+            <HeaderText sx={{ ml: 'auto', mr: 'auto' }}>Please leave your feedback about this 5G slicing selfcare demo</HeaderText>
           </Container>
           <Container maxWidth={false} style={{ maxWidth: '750px' }} sx={{ display: 'flex', alignItems: 'center' }}>
             <StyledTextField
