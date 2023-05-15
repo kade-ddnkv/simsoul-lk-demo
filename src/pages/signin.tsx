@@ -34,7 +34,7 @@ export default function SignIn() {
         <Box component='form' autoComplete='off' onSubmit={onSubmit} sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <HeaderText sx={{ ml: 'auto', mr: 'auto' }}>SIGN IN</HeaderText>
           <StyledTextField
-            sx={{ mt: 2 }}
+            sx={{ mt: 3 }}
             fullWidth
             size="small"
             label="Email"
@@ -53,7 +53,7 @@ export default function SignIn() {
               setPassword(event.target.value)
             }} />
           <HoverBlackButton type='submit' sx={{ mt: 2 }} fullWidth variant='outlined'>Sign in</HoverBlackButton>
-          <Link sx={{ mt: 2 }} href='/signup'><Typography sx={{ fontSize: '14px' }}>Create account</Typography></Link>
+          <Link sx={{ mt: 1 }} href='/signup'><Typography sx={{ fontSize: '14px' }}>Create account</Typography></Link>
           <Link sx={{ mt: 10, mb: -12 }} href='/info'><Typography sx={{ fontSize: '14px' }}>What is the purpose of this demo and how to use it?</Typography></Link>
         </Box>
       </Container>

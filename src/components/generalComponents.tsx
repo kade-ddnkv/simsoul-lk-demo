@@ -27,7 +27,8 @@ const StyledButton = styled(Button)({
 })
 
 const HoverBlackButton = styled(Button)({
-  borderColor: 'black',
+  // borderColor: 'black',
+  borderColor: '#c4c4c4',
   borderRadius: 0,
   color: 'black',
   ':hover': {
