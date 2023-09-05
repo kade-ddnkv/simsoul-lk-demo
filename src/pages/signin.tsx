@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Grid, Link, Box, Container, TextField, Typography } from '@mui/material'
+import { Grid, Link, Box, Stack, Container, TextField, Typography } from '@mui/material'
 import { HeaderText, HoverBlackButton, StyledTextField } from '@/components/generalComponents'
 import { useRouter } from 'next/navigation'
 import firebase from 'firebase/compat/app'
@@ -53,8 +53,11 @@ export default function SignIn() {
               setPassword(event.target.value)
             }} />
           <HoverBlackButton type='submit' sx={{ mt: 2 }} fullWidth variant='outlined'>Sign in</HoverBlackButton>
-          <Link sx={{ mt: 1 }} href='/signup'><Typography sx={{ fontSize: '14px' }}>Create account</Typography></Link>
-          <Link sx={{ mt: 10, mb: -12 }} href='/info'><Typography sx={{ fontSize: '14px' }}>What is the purpose of this demo and how to use it?</Typography></Link>
+          <Stack direction='row' spacing={0.8} sx={{ mt: 3 }}>
+          <Typography sx={{ fontSize: '14px' }}>Don't have an account?</Typography>
+          <Link href='/signup'><Typography sx={{ fontSize: '14px' }}>Sign up here!</Typography></Link>
+          </Stack>
+          <Link sx={{ mt: 10, mb: -14 }} href='/info'><Typography sx={{ fontSize: '14px' }}>What is the purpose of this demo and how to use it?</Typography></Link>
         </Box>
       </Container>
     </>

@@ -119,8 +119,8 @@ export default function SignIn() {
             <FormHelperText sx={{ marginLeft: '32px' }}>{agreeCheckHelperText}</FormHelperText>
           </FormControl>
           <HoverBlackButton type='submit' sx={{ mt: 3 }} fullWidth variant='outlined'>Create account</HoverBlackButton>
-          <Link sx={{ mt: 1 }} href='/signin'><Typography sx={{ fontSize: '14px' }}>Already have an account?</Typography></Link>
-          <Link sx={{ mt: 10, mb: -12 }} href='/info'><Typography sx={{ fontSize: '14px' }}>What is the purpose of this demo and how to use it?</Typography></Link>
+          <Link sx={{ mt: 3 }} href='/signin'><Typography sx={{ fontSize: '14px' }}>Already have an account?</Typography></Link>
+          <Link sx={{ mt: 10, mb: -14 }} href='/info'><Typography sx={{ fontSize: '14px' }}>What is the purpose of this demo and how to use it?</Typography></Link>
         </Box>
       </Container>
     </>
