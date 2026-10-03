@@ -116,18 +116,22 @@ function handleCountrySelection(country) {
     return
   }
 
-  countryLayer.style = (options: { feature: { placeId: string; }; }) => {
-    if (options.feature.placeId == countryInfo[country].placeId) {
-      return featureStyleOptions;
-    }
-  };
+  if (countryLayer) {
+    countryLayer.style = (options: { feature: { placeId: string; }; }) => {
+      if (options.feature.placeId == countryInfo[country].placeId) {
+        return featureStyleOptions;
+      }
+    };
+  }
 
-  mapRef.setCenter(countryInfo[country].center)
-  mapRef.setZoom(countryInfo[country].zoom)
+  mapRef?.setCenter(countryInfo[country].center)
+  mapRef?.setZoom(countryInfo[country].zoom)
 }
 
 function resetContrySelection() {
-  countryLayer.style = null;
+  if (countryLayer) {
+    countryLayer.style = null;
+  }
 }
 
 let drawingControlOptionsChangeable = {
@@ -152,12 +156,18 @@ function switchDrawingModes(geographyTypes: string, country: string) {
 
 function changeDrawingModes(drawingModes: string[]) {
   drawingControlOptionsChangeable.drawingModes = drawingModes
-  drawingManager.current.setOptions({
+  drawingManager?.current?.setOptions({
     drawingControlOptionsChangeable
   })
 }
 
 const RenderMap = () => {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: '#ebebeb' }}>
+      <Typography>Website is in maintenance mode, so maps functionality is not available, sorry (-_-;)</Typography>
+    </Box>
+  )
+
   const { setShapesGeography } = useContext(MyContextApi)
   const { geographyType, country, shapesGeography } = useContext(MyContext)
 
@@ -189,7 +199,7 @@ const RenderMap = () => {
     // Загрузка сохраненных данных при первой загрузке компонента.
     deleteShapes()
     resetContrySelection()
-    drawingManager.current.setDrawingMode(null)
+    drawingManager?.current?.setDrawingMode(null)
     switchDrawingModes(geographyType, country)
     // Загрузка сохраненных объектов на карту.
     let shapesTemp = shapesGeography
@@ -206,8 +216,8 @@ const RenderMap = () => {
 
   function handleShapeAdded(shape) {
     shapes.push(shape)
-    drawingManager.current.setDrawingMode(null)
-    drawingManager.current.setOptions({ drawingControl: false })
+    drawingManager?.current?.setDrawingMode(null)
+    drawingManager?.current?.setOptions({ drawingControl: false })
     setShapesGeography(shapes)
   }
 
@@ -259,7 +269,7 @@ const RenderMap = () => {
 function deleteShapes() {
   shapes.forEach(shape => shape.setMap(null))
   shapes = []
-  drawingManager.current.setOptions({ drawingControl: true })
+  drawingManager?.current?.setOptions({ drawingControl: true })
 }
 
 const RadioButtonsGeographyType = () => {
@@ -274,7 +284,7 @@ const RadioButtonsGeographyType = () => {
     deleteShapes()
     setShapesGeography(shapes)
     resetContrySelection()
-    drawingManager.current.setDrawingMode(null)
+    drawingManager?.current?.setDrawingMode(null)
     switchDrawingModes(event.target.value, country)
   }
 
@@ -327,13 +337,7 @@ const RadioButtonsGeographyType = () => {
 }
 
 function GeographyTab() {
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyA74mDjm325UirYKxs5ui-9xyWhSDzIDjc",
-    libraries: libraries,
-    language: 'en',
-    version: 'beta',
-    region: 'RS',
-  })
+  const isLoaded = true, loadError = false;
 
   const Wrapper = ({ children }) => (
     <Grid container sx={{ width: '100%' }} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
